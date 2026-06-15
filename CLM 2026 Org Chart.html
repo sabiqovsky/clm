@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLM 2026 Organizational Structure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2433;--ink-soft:#56607a;--ink-faint:#8a93a8;
+    --line:#d7d2c6;--line-soft:#e7e3da;--paper:#ffffff;--connect:#bfb9af;
+    --accent:#334155;
+    --ID:#2563eb;--PH:#e11d48;--MY:#ea580c;--TH:#0f9d8a;--CN:#7c3aed;--RG:#0e7490;--PL:#5b6472;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#ece8e0;
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    color:var(--ink);-webkit-font-smoothing:antialiased;
+    padding:40px 24px 64px;
+    display:flex;justify-content:center;
+    min-height:100vh;
+  }
+  .page{
+    width:1360px;
+    background:var(--paper);border-radius:4px;
+    box-shadow:0 2px 16px rgba(40,33,20,.13);
+    padding:52px 56px 56px;
+  }
+  .masthead{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:32px;
+    padding-bottom:22px;border-bottom:1.5px solid var(--ink);margin-bottom:40px;
+  }
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px;}
+  .title{font-size:33px;font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.02;}
+  .title span{color:var(--ink-faint);font-weight:600;}
+  .legend{display:flex;flex-wrap:wrap;gap:7px 14px;max-width:430px;justify-content:flex-end;}
+  .leg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+  .leg .swatch{width:11px;height:11px;border-radius:3px;flex:none;}
+
+  .chart-wrap{overflow-x:auto;overflow-y:visible;padding-bottom:8px;}
+  #chart-canvas{position:relative;display:block;}
+
+  /* ---- Card base ---- */
+  .ocard{
+    position:absolute;border-radius:9px;overflow:hidden;
+    background:#fff;border:1px solid var(--line-soft);
+    box-shadow:0 1px 4px rgba(28,36,51,.07);
+    cursor:default;
+    transition:opacity .22s,filter .22s,box-shadow .15s,transform .15s;
+  }
+  .ocard:hover{box-shadow:0 4px 14px rgba(28,36,51,.16);transform:translateY(-1px);z-index:10;}
+  .ocard .top-strip{height:3px;width:100%;}
+  .ocard .ci{padding:9px 11px 10px;text-align:center;}
+  /* title: allow wrap, no truncation */
+  .ocard .ce{font-size:8.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;margin-bottom:4px;line-height:1.35;white-space:normal;}
+  /* name: single line */
+  .ocard .cn{font-size:12px;font-weight:800;letter-spacing:-.01em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ocard .cpt{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;justify-content:center;}
+  .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 5px;line-height:1.2;}
+
+  .ocard.l0{background:var(--ink);border:none;box-shadow:0 6px 18px rgba(28,36,51,.24);}
+  .ocard.l0 .ce{color:#8a93a8;}
+  .ocard.l0 .cn{color:#fff;font-size:16px;}
+  .ocard.l1{background:#f6f4ef;border:1.5px solid var(--ink);}
+  .ocard.l1 .ce{color:var(--ink-soft);}
+  .ocard.l1 .cn{color:var(--ink);font-size:14px;}
+  .ocard.l2-lead{border:none;}
+  .ocard.l2-lead .ce{color:rgba(255,255,255,.72);}
+  .ocard.l2-lead .cn{color:#fff;}
+  .ocard.l2-lead .cpill{color:#fff;background:rgba(255,255,255,.2);}
+  .ocard.l2-direct{background:var(--accent);border:none;}
+  .ocard.l2-direct .ce{color:rgba(255,255,255,.65);}
+  .ocard.l2-direct .cn{color:#fff;}
+  .ocard.l2-direct .cpill{color:#fff;background:rgba(255,255,255,.18);}
+  .ocard.l3{background:#fff;}
+  .ocard.l3 .ce{color:var(--ink-faint);}
+  .ocard.l3 .cn{color:var(--ink);font-size:11.5px;}
+
+  /* tweak: color off */
+  body[data-color="off"] .ocard.l2-lead{background:var(--accent)!important;}
+  body[data-color="off"] .ocard.l2-lead .cpill{color:#fff;background:rgba(255,255,255,.18);}
+  body[data-color="off"] .top-strip{background:var(--accent)!important;}
+
+  /* tweak: focus region */
+  body[data-focus="ID"]  .ocard[data-region]:not([data-region~="ID"]),
+  body[data-focus="PH"]  .ocard[data-region]:not([data-region~="PH"]),
+  body[data-focus="MY"]  .ocard[data-region]:not([data-region~="MY"]),
+  body[data-focus="TH"]  .ocard[data-region]:not([data-region~="TH"]),
+  body[data-focus="CN"]  .ocard[data-region]:not([data-region~="CN"]),
+  body[data-focus="RG"]  .ocard[data-region]:not([data-region~="RG"]),
+  body[data-focus="PL"]  .ocard[data-region]:not([data-region~="PL"]){opacity:.15;filter:saturate(.2);}
+
+  /* tweak: compact density */
+  body[data-density="compact"] .ocard .ci{padding:6px 9px 7px;}
+  body[data-density="compact"] .ocard .cn{font-size:11px!important;}
+  body[data-density="compact"] .ocard .ce{font-size:8px;margin-bottom:2px;}
+  body[data-density="compact"] .ocard .cpt{margin-top:3px;gap:2px;}
+  body[data-density="compact"] .ocard .cpill{font-size:8px;padding:1px 4px;}
+
+  .footnote{
+    margin-top:36px;padding-top:14px;border-top:1px solid var(--line-soft);
+    font-size:10.5px;color:var(--ink-faint);
+    display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  }
+  .scroll-hint{font-size:10px;color:var(--ink-faint);text-align:right;margin-top:6px;letter-spacing:.04em;}
+
+  @page{size:A3 landscape;margin:10mm;}
+  @media print{
+    body{background:#fff;padding:0;}
+    .page{box-shadow:none;border-radius:0;padding:0;display:block;}
+    #tweaks-root{display:none!important;}
+    .chart-wrap{overflow:visible;}
+    #chart-canvas{transform:scale(.44);transform-origin:top left;}
+    .scroll-hint{display:none;}
+    .ocard,.top-strip{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body data-color="on" data-focus="all" data-density="comfortable">
+
+<div class="page">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">2026 Organizational Structure</p>
+      <h1 class="title">Customer Lifecycle Management <span>&middot; CLM</span></h1>
+    </div>
+    <div class="legend" aria-label="Region key">
+      <span class="leg"><span class="swatch" style="background:var(--ID)"></span>ID&nbsp;Indonesia</span>
+      <span class="leg"><span class="swatch" style="background:var(--PH)"></span>PH&nbsp;Philippines</span>
+      <span class="leg"><span class="swatch" style="background:var(--MY)"></span>MY&nbsp;Malaysia</span>
+      <span class="leg"><span class="swatch" style="background:var(--TH)"></span>TH&nbsp;Thailand</span>
+      <span class="leg"><span class="swatch" style="background:var(--CN)"></span>CN&nbsp;China</span>
+      <span class="leg"><span class="swatch" style="background:var(--RG)"></span>Regional</span>
+      <span class="leg"><span class="swatch" style="background:var(--PL)"></span>Pool</span>
+    </div>
+  </header>
+
+  <div class="chart-wrap">
+    <div id="chart-canvas"></div>
+  </div>
+  <p class="scroll-hint">&#8592;&nbsp;scroll to see full chart&nbsp;&#8594;</p>
+
+  <div class="footnote">
+    <span>Customer Lifecycle Management &mdash; 2026 reporting structure</span>
+    <span>Color = region &middot; Filled card = Lead &middot; White = Manager / Consultant</span>
+  </div>
+</div>
+
+<div id="tweaks-root"></div>
+
+<script>
+(function(){
+
+/* ---- DATA ---- */
+var RCOLS  = {ID:'#2563eb',PH:'#e11d48',MY:'#ea580c',TH:'#0f9d8a',CN:'#7c3aed',RG:'#0e7490',PL:'#5b6472'};
+var RLABEL = {ID:'ID',PH:'PH',MY:'MY',TH:'TH',CN:'CN',RG:'Regional',PL:'Pool'};
+
+var ORG = {name:'Shing Kwan Tan',lv:0,ey:'Head of Customer Lifecycle Management',rg:[],ch:[
+  {name:'Dinan',lv:1,ey:'Head of Implementations',rg:[],ch:[
+    {name:'Janet',lv:2,lead:true,ey:'Implementations Lead',rg:['RG','ID'],ch:[
+      {name:'Dionne Aurelia',lv:3,ey:'Consultant / Manager',rg:['ID'],ch:[]},
+      {name:'Hamizah Hayat',lv:3,ey:'Consultant / Manager',rg:['MY'],ch:[]},
+      {name:'Dianne Cabrera',lv:3,ey:'Consultant / Manager',rg:['PH'],ch:[]}
+    ]},
+    {name:'Eric Len',lv:2,lead:true,ey:'Implementations Lead',rg:['CN','TH'],ch:[
+      {name:'Silitha (Tob) Kasiwong',lv:3,ey:'Consultant / Manager',rg:['TH'],ch:[]}
+    ]},
+    {name:'Gabriel Sihombing (Gabs)',lv:2,lead:false,ey:'Consultant / Manager',rg:['ID'],ch:[]},
+    {name:'Nina Rasmeika Pratiwi',lv:2,lead:false,ey:'Consultant / Manager',rg:['RG'],ch:[]}
+  ]},
+  {name:'Clory Pienarso',lv:1,ey:'Head of Customer Success',rg:[],ch:[
+    {name:'Putri Erfiasany',lv:2,lead:true,ey:'Customer Success Lead',rg:['ID'],ch:[
+      {name:'Fergie Iswandi',lv:3,ey:'CS Manager',rg:['ID'],ch:[]},
+      {name:'Sarah Mutia',lv:3,ey:'CS Manager',rg:['ID'],ch:[]},
+      {name:'Raihan Sanika',lv:3,ey:'CS Manager',rg:['ID'],ch:[]}
+    ]},
+    {name:'May Cruz',lv:2,lead:true,ey:'Customer Success Lead',rg:['PH'],ch:[
+      {name:'Cherry Mijares',lv:3,ey:'CS Manager',rg:['PH'],ch:[]},
+      {name:'Claudia Liwanag',lv:3,ey:'CS Manager',rg:['PH'],ch:[]}
+    ]},
+    {name:'Jenny Lu',lv:2,lead:true,ey:'Customer Success Lead',rg:['RG'],ch:[
+      {name:'Syuhada Sipayung',lv:3,ey:'CS Manager',rg:['RG'],ch:[]},
+      {name:'Candice Lee',lv:3,ey:'CS Manager',rg:['RG'],ch:[]}
+    ]},
+    {name:'David Setyawan',lv:2,lead:true,ey:'Customer Success Lead',rg:['PL'],ch:[
+      {name:'Wynona Lamiraj',lv:3,ey:'CS Manager',rg:['PL'],ch:[]},
+      {name:'Ridzeki Akbar',lv:3,ey:'CS Manager',rg:['PL'],ch:[]},
+      {name:'Rahmadika Kampai',lv:3,ey:'CS Manager',rg:['PL'],ch:[]},
+      {name:'Faira Yenita',lv:3,ey:'CS Manager',rg:['PL'],ch:[]},
+      {name:'Rachel Diercie',lv:3,ey:'CS Manager',rg:['PL'],ch:[]}
+    ]}
+  ]},
+  {name:'Askar Sabiq',lv:1,ey:'Automation & Data Analytics',rg:[],ch:[]}
+]};
+
+/* ---- LAYOUT CONSTANTS ---- */
+var CW = 220, CH = 82, HG = 14, VG = 100, PAD = 44;
+
+/* subtree width */
+function sw(n) {
+  if (!n.ch || !n.ch.length) return CW;
+  var tot = n.ch.reduce(function(s,c){ return s + sw(c); }, 0);
+  return Math.max(CW, tot + (n.ch.length - 1) * HG);
+}
+
+/* layout: place nodes, store connections for second pass */
+var placements = [];   /* [{n, cx, y, idx}] */
+var connections = [];  /* [{pidx, pcx, py, ccxs, childY}] */
+
+function lay(n, cx, y) {
+  var myIdx = placements.length;
+  n._pidx = myIdx;
+  placements.push({n:n, cx:cx, y:y});
+  if (!n.ch || !n.ch.length) return;
+  var childY = y + CH + VG;
+  var tot = n.ch.reduce(function(s,c){ return s + sw(c); }, 0) + (n.ch.length - 1) * HG;
+  var x0 = cx - tot / 2;
+  var ccxs = n.ch.map(function(c){
+    var cw = sw(c), ccx = x0 + cw / 2;
+    x0 += cw + HG;
+    return ccx;
+  });
+  connections.push({pidx:myIdx, pcx:cx, py:y, ccxs:ccxs, childY:childY});
+  n.ch.forEach(function(c, i){ lay(c, ccxs[i], childY); });
+}
+
+lay(ORG, sw(ORG) / 2 + PAD, PAD);
+
+var maxX = Math.max.apply(null, placements.map(function(p){ return p.cx + CW / 2; })) + PAD;
+var estMaxY = Math.max.apply(null, placements.map(function(p){ return p.y; })) + CH + VG + PAD;
+
+/* ---- CARD HELPERS ---- */
+function cardCls(n) {
+  if (n.lv === 0) return 'ocard l0';
+  if (n.lv === 1) return 'ocard l1';
+  if (n.lv === 2) return n.lead ? 'ocard l2-lead' : 'ocard l2-direct';
+  return 'ocard l3';
+}
+function cardBgStyle(n) {
+  if (n.lv === 2 && n.lead && n.rg[0]) return 'background:' + RCOLS[n.rg[0]] + ';';
+  return '';
+}
+function pillHtml(r, n) {
+  var col = RCOLS[r] || '#888';
+  var st = '';
+  if (n.lv === 3) {
+    st = 'color:' + col + ';background:color-mix(in srgb,' + col + ' 13%,white);border:1px solid color-mix(in srgb,' + col + ' 26%,white);';
+  }
+  return '<span class="cpill" style="' + st + '">' + (RLABEL[r]||r) + '</span>';
+}
+function renderCard(p, idx) {
+  var n = p.n, cx = p.cx, y = p.y;
+  var cw = (n.lv === 0) ? 280 : CW;
+  var lx = Math.round(cx - cw / 2), ly = Math.round(y);
+  var bgStyle = cardBgStyle(n);
+  var strip = (n.lv === 3 && n.rg[0]) ? '<div class="top-strip" style="background:' + RCOLS[n.rg[0]] + '"></div>' : '';
+  var drAttr = n.rg.length ? ' data-region="' + n.rg.join(' ') + '"' : '';
+  var pills = n.rg.map(function(r){ return pillHtml(r, n); }).join('');
+  var pillsRow = pills ? '<div class="cpt">' + pills + '</div>' : '';
+  return '<div class="' + cardCls(n) + '" data-pidx="' + idx + '" style="left:' + lx + 'px;top:' + ly + 'px;width:' + cw + 'px;' + bgStyle + '"' + drAttr + '>' +
+    strip + '<div class="ci"><div class="ce">' + (n.ey||'') + '</div><div class="cn">' + n.name + '</div>' + pillsRow + '</div></div>';
+}
+
+/* ---- PASS 1: Render cards ---- */
+var canvas = document.getElementById('chart-canvas');
+canvas.style.width  = maxX + 'px';
+canvas.style.height = estMaxY + 'px';
+canvas.innerHTML = placements.map(function(p, i){ return renderCard(p, i); }).join('');
+
+/* ---- PASS 2: Measure actual heights, then draw SVG lines ---- */
+var actualH = placements.map(function(_, i){
+  var el = canvas.querySelector('[data-pidx="' + i + '"]');
+  return el ? el.offsetHeight : CH;
+});
+
+/* refit canvas height */
+var trueMaxY = Math.max.apply(null, placements.map(function(p, i){ return p.y + actualH[i]; })) + PAD + 30;
+canvas.style.height = trueMaxY + 'px';
+
+/* compute edges */
+var edges = [];
+connections.forEach(function(conn){
+  var pBottom = conn.py + actualH[conn.pidx];
+  var busY = Math.round(pBottom + (conn.childY - pBottom) * 0.5);
+  /* stem: parent card bottom → bus */
+  edges.push([conn.pcx, pBottom, conn.pcx, busY]);
+  /* horizontal bus */
+  if (conn.ccxs.length > 1)
+    edges.push([conn.ccxs[0], busY, conn.ccxs[conn.ccxs.length - 1], busY]);
+  /* vertical drops → each child top */
+  conn.ccxs.forEach(function(ccx){
+    edges.push([ccx, busY, ccx, conn.childY]);
+  });
+});
+
+/* build SVG */
+var NS = 'http://www.w3.org/2000/svg';
+var svgEl = document.createElementNS(NS, 'svg');
+svgEl.style.cssText = 'position:absolute;inset:0;width:' + maxX + 'px;height:' + trueMaxY + 'px;pointer-events:none;overflow:visible;';
+svgEl.setAttribute('viewBox', '0 0 ' + maxX + ' ' + trueMaxY);
+edges.forEach(function(e){
+  var line = document.createElementNS(NS, 'line');
+  line.setAttribute('x1', e[0].toFixed(1)); line.setAttribute('y1', e[1].toFixed(1));
+  line.setAttribute('x2', e[2].toFixed(1)); line.setAttribute('y2', e[3].toFixed(1));
+  line.setAttribute('stroke', 'var(--connect)');
+  line.setAttribute('stroke-width', '1.5');
+  line.setAttribute('stroke-linecap', 'round');
+  svgEl.appendChild(line);
+});
+canvas.insertBefore(svgEl, canvas.firstChild);
+
+/* center scroll */
+var headCX = sw(ORG) / 2 + PAD;
+setTimeout(function(){
+  var wrap = document.querySelector('.chart-wrap');
+  wrap.scrollLeft = Math.max(0, Math.round(headCX - wrap.clientWidth / 2));
+}, 30);
+
+})();
+</script>
+
+<!-- React + Babel for Tweaks panel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+const ORG_TWEAK_DEFAULTS = {density:"comfortable",colorLeads:true,showLegend:true,focus:"all",accent:"#334155"};
+function OrgTweaks(){
+  const [t,setTweak]=useTweaks(ORG_TWEAK_DEFAULTS);
+  React.useEffect(()=>{
+    const b=document.body;
+    b.dataset.density=t.density;
+    b.dataset.color=t.colorLeads?"on":"off";
+    b.dataset.focus=t.focus;
+    document.documentElement.style.setProperty('--accent',t.accent);
+    const lg=document.querySelector('.legend');
+    if(lg)lg.style.display=t.showLegend?'':'none';
+  },[t]);
+  return(
+    <TweaksPanel title="Tweaks">
+      <TweakSection label="Layout"/>
+      <TweakRadio label="Density" value={t.density} options={['comfortable','compact']} onChange={v=>setTweak('density',v)}/>
+      <TweakToggle label="Region legend" value={t.showLegend} onChange={v=>setTweak('showLegend',v)}/>
+      <TweakSection label="Color coding"/>
+      <TweakToggle label="Color leads by region" value={t.colorLeads} onChange={v=>setTweak('colorLeads',v)}/>
+      <TweakSelect label="Focus region" value={t.focus}
+        options={[
+          {value:'all',label:'All regions'},
+          {value:'ID',label:'ID · Indonesia'},
+          {value:'PH',label:'PH · Philippines'},
+          {value:'MY',label:'MY · Malaysia'},
+          {value:'TH',label:'TH · Thailand'},
+          {value:'CN',label:'CN · China'},
+          {value:'RG',label:'Regional'},
+          {value:'PL',label:'Pool'}
+        ]}
+        onChange={v=>setTweak('focus',v)}/>
+      <TweakSection label="Accent"/>
+      <TweakColor label="Neutral color" value={t.accent} options={['#334155','#1e293b','#3730a3','#0f766e']} onChange={v=>setTweak('accent',v)}/>
+    </TweaksPanel>
+  );
+}
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<OrgTweaks/>);
+</script>
+</body>
+</html>
