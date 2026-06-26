@@ -81,6 +81,9 @@
   .ocard.l2 .ce{color:var(--ink-faint);}
   .ocard.l2 .cn{color:var(--ink);font-size:11.5px;}
 
+  .dl-bar{display:flex;gap:8px;margin-top:16px;}
+  .dl-btn{display:inline-flex;align-items:center;gap:6px;font:700 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:7px 14px;border-radius:6px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:background .15s,color .15s;}
+  .dl-btn:hover{background:var(--ink);color:#fff;}
   .footnote{
     margin-top:36px;padding-top:14px;border-top:1px solid var(--line-soft);
     font-size:10.5px;color:var(--ink-faint);
@@ -116,7 +119,33 @@
   </div>
 
   <div class="footnote">Customer Lifecycle Management &mdash; 2026 reporting structure</div>
+  <div class="dl-bar">
+    <button class="dl-btn" onclick="downloadPage('jpeg')">&#8595; Download JPEG</button>
+    <button class="dl-btn" onclick="downloadPage('svg')">&#8595; Download SVG</button>
+  </div>
 </div>
+
+<script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+function downloadPage(fmt) {
+  var el = document.querySelector('.page');
+  html2canvas(el, {backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false}).then(function(canvas){
+    var a = document.createElement('a');
+    if (fmt === 'jpeg') {
+      a.href = canvas.toDataURL('image/jpeg', 0.95);
+      a.download = 'clm-team-charts.jpg';
+    } else {
+      var w = canvas.width, h = canvas.height;
+      var img = canvas.toDataURL('image/png');
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">' +
+        '<image href="'+img+'" width="'+w+'" height="'+h+'"/></svg>';
+      a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      a.download = 'clm-team-charts.svg';
+    }
+    a.click();
+  });
+}
+</script>
 
 <script>
 (function(){
