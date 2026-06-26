@@ -40,7 +40,7 @@
 
   .teams-grid{display:flex;flex-direction:column;gap:32px;}
 
-  .team-section{background:#f6f4ef;border-radius:8px;padding:24px 20px 28px;}
+  .team-section{background:#ffffff;border-radius:8px;padding:24px 20px 28px;border:1px solid var(--line-soft);}
   .team-section h2{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:0 0 4px;}
   .team-section .sub{font-size:11px;color:var(--ink-soft);margin:0 0 18px;}
   .chart-wrap{overflow-x:auto;overflow-y:visible;padding-bottom:4px;}
@@ -275,6 +275,11 @@ function renderTree(root, canvasEl){
 
 TEAMS.forEach(function(t){
   renderTree(t.root, document.getElementById(t.id));
+  setTimeout(function(){
+    var canvas = document.getElementById(t.id);
+    var wrap = canvas.parentElement;
+    wrap.scrollLeft = Math.max(0, Math.round((canvas.offsetWidth - wrap.clientWidth) / 2));
+  }, 60);
 });
 })();
 </script>
