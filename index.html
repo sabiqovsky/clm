@@ -149,7 +149,7 @@
     <span>Color = region &middot; Filled card = Lead &middot; White = Manager / Consultant</span>
   </div>
   <div class="dl-bar">
-    <button class="dl-btn" onclick="downloadChart('jpeg')">&#8595; Download JPEG</button>
+    <button class="dl-btn" onclick="downloadChart('png')">&#8595; Download PNG</button>
     <button class="dl-btn" onclick="downloadChart('svg')">&#8595; Download SVG</button>
   </div>
 </div>
@@ -332,13 +332,13 @@ function downloadChart(fmt) {
   var el = document.getElementById('chart-canvas');
   var w = el.scrollWidth, h = el.scrollHeight;
   html2canvas(el, {
-    backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false,
+    backgroundColor:'#ffffff', scale:3, useCORS:true, logging:false,
     width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
   }).then(function(canvas){
     var a = document.createElement('a');
-    if (fmt === 'jpeg') {
-      a.href = canvas.toDataURL('image/jpeg', 0.95);
-      a.download = 'clm-org-chart.jpg';
+    if (fmt === 'png') {
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'clm-org-chart.png';
     } else {
       var iw=canvas.width, ih=canvas.height, img=canvas.toDataURL('image/png');
       var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+iw+'" height="'+ih+'"><image href="'+img+'" width="'+iw+'" height="'+ih+'"/></svg>';

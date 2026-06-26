@@ -106,7 +106,7 @@
       <p class="sub">Head: Dinan</p>
       <div class="chart-wrap"><div class="chart-canvas" id="chart-dinan"></div></div>
       <div class="dl-bar">
-        <button class="dl-btn" onclick="dlChart('chart-dinan','clm-implementations','jpeg')">&#8595; JPEG</button>
+        <button class="dl-btn" onclick="dlChart('chart-dinan','clm-implementations','png')">&#8595; PNG</button>
         <button class="dl-btn" onclick="dlChart('chart-dinan','clm-implementations','svg')">&#8595; SVG</button>
       </div>
     </div>
@@ -115,7 +115,7 @@
       <p class="sub">Head: Clory Pienarso</p>
       <div class="chart-wrap"><div class="chart-canvas" id="chart-clory"></div></div>
       <div class="dl-bar">
-        <button class="dl-btn" onclick="dlChart('chart-clory','clm-customer-success','jpeg')">&#8595; JPEG</button>
+        <button class="dl-btn" onclick="dlChart('chart-clory','clm-customer-success','png')">&#8595; PNG</button>
         <button class="dl-btn" onclick="dlChart('chart-clory','clm-customer-success','svg')">&#8595; SVG</button>
       </div>
     </div>
@@ -124,7 +124,7 @@
       <p class="sub">Lead: David Setyawan</p>
       <div class="chart-wrap"><div class="chart-canvas" id="chart-david"></div></div>
       <div class="dl-bar">
-        <button class="dl-btn" onclick="dlChart('chart-david','clm-pool','jpeg')">&#8595; JPEG</button>
+        <button class="dl-btn" onclick="dlChart('chart-david','clm-pool','png')">&#8595; PNG</button>
         <button class="dl-btn" onclick="dlChart('chart-david','clm-pool','svg')">&#8595; SVG</button>
       </div>
     </div>
@@ -139,13 +139,13 @@ function dlChart(id, name, fmt) {
   var el = document.getElementById(id);
   var w = el.scrollWidth, h = el.scrollHeight;
   html2canvas(el, {
-    backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false,
+    backgroundColor:'#ffffff', scale:3, useCORS:true, logging:false,
     width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
   }).then(function(canvas){
     var a = document.createElement('a');
-    if (fmt === 'jpeg') {
-      a.href = canvas.toDataURL('image/jpeg', 0.95);
-      a.download = name + '.jpg';
+    if (fmt === 'png') {
+      a.href = canvas.toDataURL('image/png');
+      a.download = name + '.png';
     } else {
       var iw=canvas.width, ih=canvas.height, img=canvas.toDataURL('image/png');
       var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+iw+'" height="'+ih+'"><image href="'+img+'" width="'+iw+'" height="'+ih+'"/></svg>';
