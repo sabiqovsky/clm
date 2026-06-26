@@ -1,0 +1,253 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLM 2026 — Team Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2433;--ink-soft:#56607a;--ink-faint:#8a93a8;
+    --line:#d7d2c6;--line-soft:#e7e3da;--paper:#ffffff;--connect:#bfb9af;
+    --accent:#334155;
+    --PL:#5b6472;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#ece8e0;
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    color:var(--ink);-webkit-font-smoothing:antialiased;
+    padding:40px 24px 64px;
+  }
+  .page{
+    max-width:1500px;margin:0 auto;
+    background:var(--paper);border-radius:4px;
+    box-shadow:0 2px 16px rgba(40,33,20,.13);
+    padding:52px 56px 56px;
+  }
+  .masthead{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:32px;
+    padding-bottom:22px;border-bottom:1.5px solid var(--ink);margin-bottom:40px;
+  }
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px;}
+  .title{font-size:33px;font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.02;}
+  .title span{color:var(--ink-faint);font-weight:600;}
+  .nav{font-size:12px;font-weight:600;color:var(--ink-soft);}
+  .nav a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--ink);}
+  .nav a:hover{color:var(--ink-soft);}
+
+  .teams-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;align-items:start;}
+
+  .team-section{background:#f6f4ef;border-radius:8px;padding:24px 20px 28px;}
+  .team-section h2{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:0 0 4px;}
+  .team-section .sub{font-size:11px;color:var(--ink-soft);margin:0 0 18px;}
+  .chart-wrap{overflow-x:auto;overflow-y:visible;padding-bottom:4px;}
+  .chart-canvas{position:relative;display:block;}
+
+  /* ---- Card base ---- */
+  .ocard{
+    position:absolute;border-radius:9px;overflow:hidden;
+    background:#fff;border:1px solid var(--line-soft);
+    box-shadow:0 1px 4px rgba(28,36,51,.07);
+    cursor:default;
+    transition:box-shadow .15s,transform .15s;
+  }
+  .ocard:hover{box-shadow:0 4px 14px rgba(28,36,51,.16);transform:translateY(-1px);z-index:10;}
+  .ocard .top-strip{height:3px;width:100%;}
+  .ocard .ci{padding:9px 11px 10px;text-align:center;}
+  .ocard .ce{font-size:8.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;margin-bottom:4px;line-height:1.35;white-space:normal;}
+  .ocard .cn{font-size:12px;font-weight:800;letter-spacing:-.01em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ocard .cpt{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;justify-content:center;}
+  .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 5px;line-height:1.2;}
+
+  /* lv0 = team head (Dinan / Clory / David) */
+  .ocard.l0{background:var(--ink);border:none;box-shadow:0 4px 14px rgba(28,36,51,.22);}
+  .ocard.l0 .ce{color:#8a93a8;}
+  .ocard.l0 .cn{color:#fff;font-size:14px;}
+  /* lv1 = leads */
+  .ocard.l1-lead{border:none;background:#0f6b7a;}
+  .ocard.l1-lead .ce{color:rgba(255,255,255,.72);}
+  .ocard.l1-lead .cn{color:#fff;}
+  .ocard.l1-lead .cpill{color:#fff;background:rgba(0,0,0,.25);}
+  /* lv1 IC (no children) */
+  .ocard.l1-direct{background:var(--accent);border:none;}
+  .ocard.l1-direct .ce{color:rgba(255,255,255,.65);}
+  .ocard.l1-direct .cn{color:#fff;}
+  .ocard.l1-direct .cpill{color:#fff;background:rgba(0,0,0,.2);}
+  /* lv2 */
+  .ocard.l2{background:#fff;}
+  .ocard.l2 .ce{color:var(--ink-faint);}
+  .ocard.l2 .cn{color:var(--ink);font-size:11.5px;}
+
+  .footnote{
+    margin-top:36px;padding-top:14px;border-top:1px solid var(--line-soft);
+    font-size:10.5px;color:var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">2026 Organizational Structure</p>
+      <h1 class="title">CLM Team Charts <span>&middot; Detailed View</span></h1>
+    </div>
+    <div class="nav"><a href="index.html">&#8592; Full org chart</a></div>
+  </header>
+
+  <div class="teams-grid">
+    <div class="team-section">
+      <h2>Implementations</h2>
+      <p class="sub">Head: Dinan</p>
+      <div class="chart-wrap"><div class="chart-canvas" id="chart-dinan"></div></div>
+    </div>
+    <div class="team-section">
+      <h2>Customer Success</h2>
+      <p class="sub">Head: Clory Pienarso</p>
+      <div class="chart-wrap"><div class="chart-canvas" id="chart-clory"></div></div>
+    </div>
+    <div class="team-section">
+      <h2>Pool</h2>
+      <p class="sub">Lead: David Setyawan</p>
+      <div class="chart-wrap"><div class="chart-canvas" id="chart-david"></div></div>
+    </div>
+  </div>
+
+  <div class="footnote">Customer Lifecycle Management &mdash; 2026 reporting structure</div>
+</div>
+
+<script>
+(function(){
+var RCOLS = {PL:'#5b6472'};
+var RLABEL = {PL:'Pool'};
+
+/* Each tree rooted at lv:0 for rendering purposes */
+var TEAMS = [
+  {id:'chart-dinan', root:{name:'Dinan',lv:0,ey:'Head of Implementations',ch:[
+    {name:'Janet',lv:1,lead:true,ey:'Implementations Lead',rg:[],ch:[
+      {name:'Dionne Aurelia',lv:2,ey:'Implementations Manager',rg:[],ch:[]},
+      {name:'Dianne Cabrera',lv:2,ey:'Implementations Manager',rg:[],ch:[]}
+    ]},
+    {name:'Eric Len',lv:1,lead:true,ey:'Implementations Lead',rg:[],ch:[
+      {name:'Silitha (Tob) Kasiwong',lv:2,ey:'Implementations Manager',rg:[],ch:[]},
+      {name:'Hamizah Hayat',lv:2,ey:'Implementations Manager',rg:[],ch:[]}
+    ]},
+    {name:'Gabriel Sihombing (Gabs)',lv:1,lead:false,ey:'Implementations Manager',rg:[],ch:[]},
+    {name:'Nina Rasmeika Pratiwi',lv:1,lead:false,ey:'Implementations Manager',rg:[],ch:[]},
+    {name:'Askar Sabiq',lv:1,lead:false,ey:'Automation & Analytics',rg:[],ch:[]}
+  ]}},
+  {id:'chart-clory', root:{name:'Clory Pienarso',lv:0,ey:'Head of Customer Success',ch:[
+    {name:'Putri Erfiasany',lv:1,lead:true,ey:'Customer Success Lead',rg:[],ch:[
+      {name:'Fergie Iswandi',lv:2,ey:'CS Manager',rg:[],ch:[]},
+      {name:'Sarah Mutia',lv:2,ey:'CS Manager',rg:[],ch:[]},
+      {name:'Rahmadika Kampai',lv:2,ey:'CS Manager',rg:[],ch:[]}
+    ]},
+    {name:'May Cruz',lv:1,lead:true,ey:'Customer Success Lead',rg:[],ch:[
+      {name:'Cherry Mijares',lv:2,ey:'CS Manager',rg:[],ch:[]},
+      {name:'Claudia Liwanag',lv:2,ey:'CS Manager',rg:[],ch:[]}
+    ]},
+    {name:'Jenny Lu',lv:1,lead:false,ey:'CS Manager',rg:[],ch:[]},
+    {name:'Syuhada Sipayung',lv:1,lead:false,ey:'CS Manager',rg:[],ch:[]},
+    {name:'Candice Lee',lv:1,lead:false,ey:'CS Manager',rg:[],ch:[]}
+  ]}},
+  {id:'chart-david', root:{name:'David Setyawan',lv:0,ey:'Customer Success Lead',ch:[
+    {name:'Wynona Lamiraj',lv:1,lead:false,ey:'CS Manager',rg:['PL'],ch:[]},
+    {name:'Ridzeki Akbar',lv:1,lead:false,ey:'CS Manager',rg:['PL'],ch:[]},
+    {name:'Faira Yenita',lv:1,lead:false,ey:'CS Manager',rg:['PL'],ch:[]},
+    {name:'Rachel Diercie',lv:1,lead:false,ey:'CS Manager',rg:['PL'],ch:[]}
+  ]}}
+];
+
+var CW = 180, CH = 76, HG = 10, VG = 80, PAD = 20;
+
+function sw(n){
+  if(!n.ch||!n.ch.length) return CW;
+  var tot=n.ch.reduce(function(s,c){return s+sw(c);},0);
+  return Math.max(CW,tot+(n.ch.length-1)*HG);
+}
+
+function cardCls(n){
+  if(n.lv===0) return 'ocard l0';
+  if(n.lv===1) return n.lead ? 'ocard l1-lead' : 'ocard l1-direct';
+  return 'ocard l2';
+}
+
+function cardBg(n){
+  if(n.lv===1&&n.lead) return 'background:' + (n.rg&&n.rg[0] ? RCOLS[n.rg[0]] : '#0f6b7a') + ';';
+  if(n.lv===1&&!n.lead&&n.rg&&n.rg[0]) return 'background:' + RCOLS[n.rg[0]] + ';';
+  return '';
+}
+
+function pillHtml(r){
+  var col=RCOLS[r]||'#888';
+  return '<span class="cpill" style="color:'+col+';background:color-mix(in srgb,'+col+' 13%,white);border:1px solid color-mix(in srgb,'+col+' 26%,white);">'+(RLABEL[r]||r)+'</span>';
+}
+
+function renderTree(root, canvasEl){
+  var placements=[], connections=[];
+  function lay(n,cx,y){
+    var idx=placements.length; n._pidx=idx;
+    placements.push({n:n,cx:cx,y:y});
+    if(!n.ch||!n.ch.length) return;
+    var childY=y+CH+VG;
+    var tot=n.ch.reduce(function(s,c){return s+sw(c);},0)+(n.ch.length-1)*HG;
+    var x0=cx-tot/2;
+    var ccxs=n.ch.map(function(c){var cw=sw(c),ccx=x0+cw/2;x0+=cw+HG;return ccx;});
+    connections.push({pidx:idx,pcx:cx,py:y,ccxs:ccxs,childY:childY});
+    n.ch.forEach(function(c,i){lay(c,ccxs[i],childY);});
+  }
+  lay(root, sw(root)/2+PAD, PAD);
+
+  var maxX=Math.max.apply(null,placements.map(function(p){return p.cx+CW/2;}))+PAD;
+  var estMaxY=Math.max.apply(null,placements.map(function(p){return p.y;}))+CH+PAD;
+  canvasEl.style.width=maxX+'px';
+  canvasEl.style.height=estMaxY+'px';
+
+  canvasEl.innerHTML=placements.map(function(p,i){
+    var n=p.n,lx=Math.round(p.cx-CW/2),ly=Math.round(p.y);
+    var rg=n.rg||[];
+    var pills=rg.map(function(r){return pillHtml(r);}).join('');
+    var pillsRow=pills?'<div class="cpt">'+pills+'</div>':'';
+    return '<div class="'+cardCls(n)+'" data-pidx="'+i+'" style="left:'+lx+'px;top:'+ly+'px;width:'+CW+'px;'+cardBg(n)+'">' +
+      '<div class="ci"><div class="ce">'+(n.ey||'')+'</div><div class="cn">'+n.name+'</div>'+pillsRow+'</div></div>';
+  }).join('');
+
+  var actualH=placements.map(function(_,i){
+    var el=canvasEl.querySelector('[data-pidx="'+i+'"]');
+    return el?el.offsetHeight:CH;
+  });
+  var trueMaxY=Math.max.apply(null,placements.map(function(p,i){return p.y+actualH[i];}))+PAD+20;
+  canvasEl.style.height=trueMaxY+'px';
+
+  var edges=[];
+  connections.forEach(function(conn){
+    var pBottom=conn.py+actualH[conn.pidx];
+    var busY=Math.round(pBottom+(conn.childY-pBottom)*0.5);
+    edges.push([conn.pcx,pBottom,conn.pcx,busY]);
+    if(conn.ccxs.length>1) edges.push([conn.ccxs[0],busY,conn.ccxs[conn.ccxs.length-1],busY]);
+    conn.ccxs.forEach(function(ccx){edges.push([ccx,busY,ccx,conn.childY]);});
+  });
+
+  var NS='http://www.w3.org/2000/svg';
+  var svg=document.createElementNS(NS,'svg');
+  svg.style.cssText='position:absolute;inset:0;width:'+maxX+'px;height:'+trueMaxY+'px;pointer-events:none;overflow:visible;';
+  svg.setAttribute('viewBox','0 0 '+maxX+' '+trueMaxY);
+  edges.forEach(function(e){
+    var l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',e[0].toFixed(1));l.setAttribute('y1',e[1].toFixed(1));
+    l.setAttribute('x2',e[2].toFixed(1));l.setAttribute('y2',e[3].toFixed(1));
+    l.setAttribute('stroke','var(--connect)');l.setAttribute('stroke-width','1.5');l.setAttribute('stroke-linecap','round');
+    svg.appendChild(l);
+  });
+  canvasEl.insertBefore(svg,canvasEl.firstChild);
+}
+
+TEAMS.forEach(function(t){
+  renderTree(t.root, document.getElementById(t.id));
+});
+})();
+</script>
+</body>
+</html>
