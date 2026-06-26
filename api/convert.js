@@ -1,5 +1,4 @@
-const CloudConvert = require('cloudconvert');
-const { Readable } = require('stream');
+const fetch = require('node-fetch');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end('Method Not Allowed');
@@ -9,33 +8,36 @@ module.exports = async function handler(req, res) {
   if (!['wmf', 'emf'].includes(format))
     return res.status(400).json({ error: 'Format must be wmf or emf' });
 
-  const apiKey = process.env.CLOUDCONVERT_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'Missing CLOUDCONVERT_API_KEY' });
+  const apiKey = process.env.CONVERTIO_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'Missing CONVERTIO_API_KEY' });
 
   try {
-    const cloudconvert = new CloudConvert(apiKey);
     const base64 = image.replace(/^data:image\/\w+;base64,/, '');
-    const buffer = Buffer.from(base64, 'base64');
 
-    const job = await cloudconvert.jobs.create({
-      tasks: {
-        upload: { operation: 'import/upload' },
-        convert: { operation: 'convert', input: 'upload', input_format: 'png', output_format: format },
-        export: { operation: 'export/url', input: 'convert' }
-      }
+    // 1. Start conversion
+    const startRes = await fetch('https://api.convertio.co/convert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ apikey: apiKey, input: 'base64', file: base64, filename: 'chart.png', outputformat: format })
     });
+    const startData = await startRes.json();
+    if (startData.status !== 'ok') throw new Error(startData.error || 'Failed to start conversion');
+    const id = startData.data.id;
 
-    const uploadTask = job.tasks.find(t => t.name === 'upload');
-    const stream = Readable.from(buffer);
-    await cloudconvert.tasks.upload(uploadTask, stream, 'chart.png', buffer.length);
+    // 2. Poll until finished
+    let outputUrl = null;
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 2000));
+      const statusRes = await fetch(`https://api.convertio.co/convert/${id}/status`);
+      const statusData = await statusRes.json();
+      if (statusData.data.step === 'finish') { outputUrl = statusData.data.output.url; break; }
+      if (statusData.data.step === 'error') throw new Error('Conversion failed on Convertio');
+    }
+    if (!outputUrl) throw new Error('Conversion timed out');
 
-    const completed = await cloudconvert.jobs.wait(job.id);
-    const fileUrl = cloudconvert.jobs.getExportUrls(completed)[0].url;
-
-    const fetch = require('node-fetch');
-    const fileRes = await fetch(fileUrl);
-    if (!fileRes.ok) throw new Error('Failed to fetch converted file');
-
+    // 3. Stream result back
+    const fileRes = await fetch(outputUrl);
+    if (!fileRes.ok) throw new Error('Failed to download converted file');
     res.setHeader('Content-Type', format === 'emf' ? 'image/x-emf' : 'image/x-wmf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}.${format}"`);
     fileRes.body.pipe(res);
