@@ -82,7 +82,7 @@
 
   /* tweak: color off */
   body[data-color="off"] .ocard.l2-lead{background:var(--accent)!important;}
-  body[data-color="off"] .ocard.l2-lead .cpill{color:#fff;background:rgba(255,255,255,.18);}
+  body[data-color="off"] .ocard.l2-lead .cpill{color:#fff;background:rgba(0,0,0,.25);}
   body[data-color="off"] .top-strip{background:var(--accent)!important;}
 
   /* tweak: focus region */
@@ -232,7 +232,7 @@ function cardCls(n) {
   return 'ocard l3';
 }
 function cardBgStyle(n) {
-  if (n.lv === 2 && n.lead && n.rg[0]) return 'background:' + RCOLS[n.rg[0]] + ';';
+  if (n.lv === 2 && n.lead) return 'background:' + (n.rg[0] ? RCOLS[n.rg[0]] : 'var(--accent)') + ';';
   return '';
 }
 function pillHtml(r, n) {
