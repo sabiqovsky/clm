@@ -215,7 +215,6 @@ function cardCls(n){
 
 function cardBg(n){
   if(n.lv===1&&n.lead) return 'background:' + (n.rg&&n.rg[0] ? RCOLS[n.rg[0]] : '#0f6b7a') + ';';
-  if(n.lv===1&&!n.lead&&n.rg&&n.rg[0]) return 'background:' + RCOLS[n.rg[0]] + ';';
   return '';
 }
 
