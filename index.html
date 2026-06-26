@@ -63,7 +63,7 @@
   .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 5px;line-height:1.2;}
 
   .ocard.l0{background:var(--ink);border:none;box-shadow:0 6px 18px rgba(28,36,51,.24);}
-  .ocard.l0 .ce{color:#8a93a8;}
+  .ocard.l0 .ce{color:#8a93a8;white-space:nowrap;}
   .ocard.l0 .cn{color:#fff;font-size:16px;}
   .ocard.l1{background:#f6f4ef;border:1.5px solid var(--ink);}
   .ocard.l1 .ce{color:var(--ink-soft);}
@@ -253,7 +253,7 @@ function pillHtml(r, n) {
 }
 function renderCard(p, idx) {
   var n = p.n, cx = p.cx, y = p.y;
-  var cw = (n.lv === 0) ? 280 : CW;
+  var cw = (n.lv === 0) ? 320 : CW;
   var lx = Math.round(cx - cw / 2), ly = Math.round(y);
   var bgStyle = cardBgStyle(n);
   var strip = (n.lv === 3 && n.rg[0]) ? '<div class="top-strip" style="background:' + RCOLS[n.rg[0]] + '"></div>' : '';
