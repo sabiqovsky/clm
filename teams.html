@@ -105,44 +105,54 @@
       <h2>Customer Implementations</h2>
       <p class="sub">Head: Dinan</p>
       <div class="chart-wrap"><div class="chart-canvas" id="chart-dinan"></div></div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="dlChart('chart-dinan','clm-implementations','jpeg')">&#8595; JPEG</button>
+        <button class="dl-btn" onclick="dlChart('chart-dinan','clm-implementations','svg')">&#8595; SVG</button>
+      </div>
     </div>
     <div class="team-section">
       <h2>Customer Success</h2>
       <p class="sub">Head: Clory Pienarso</p>
       <div class="chart-wrap"><div class="chart-canvas" id="chart-clory"></div></div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="dlChart('chart-clory','clm-customer-success','jpeg')">&#8595; JPEG</button>
+        <button class="dl-btn" onclick="dlChart('chart-clory','clm-customer-success','svg')">&#8595; SVG</button>
+      </div>
     </div>
     <div class="team-section">
       <h2>Pool</h2>
       <p class="sub">Lead: David Setyawan</p>
       <div class="chart-wrap"><div class="chart-canvas" id="chart-david"></div></div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="dlChart('chart-david','clm-pool','jpeg')">&#8595; JPEG</button>
+        <button class="dl-btn" onclick="dlChart('chart-david','clm-pool','svg')">&#8595; SVG</button>
+      </div>
     </div>
   </div>
 
   <div class="footnote">Customer Lifecycle Management &mdash; 2026 reporting structure</div>
-  <div class="dl-bar">
-    <button class="dl-btn" onclick="downloadPage('jpeg')">&#8595; Download JPEG</button>
-    <button class="dl-btn" onclick="downloadPage('svg')">&#8595; Download SVG</button>
-  </div>
 </div>
 
 <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
-function downloadPage(fmt) {
-  var el = document.querySelector('.page');
-  html2canvas(el, {backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false}).then(function(canvas){
+function dlChart(id, name, fmt) {
+  var el = document.getElementById(id);
+  var w = el.scrollWidth, h = el.scrollHeight;
+  html2canvas(el, {
+    backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false,
+    width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
+  }).then(function(canvas){
     var a = document.createElement('a');
     if (fmt === 'jpeg') {
       a.href = canvas.toDataURL('image/jpeg', 0.95);
-      a.download = 'clm-team-charts.jpg';
+      a.download = name + '.jpg';
     } else {
-      var w = canvas.width, h = canvas.height;
-      var img = canvas.toDataURL('image/png');
-      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">' +
-        '<image href="'+img+'" width="'+w+'" height="'+h+'"/></svg>';
-      a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-      a.download = 'clm-team-charts.svg';
+      var iw=canvas.width, ih=canvas.height, img=canvas.toDataURL('image/png');
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+iw+'" height="'+ih+'"><image href="'+img+'" width="'+iw+'" height="'+ih+'"/></svg>';
+      a.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+      a.download = name + '.svg';
     }
-    a.click();
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
   });
 }
 </script>

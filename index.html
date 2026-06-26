@@ -327,21 +327,22 @@ setTimeout(function(){
 <script>
 function downloadChart(fmt) {
   var el = document.getElementById('chart-canvas');
-  html2canvas(el, {backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false}).then(function(canvas){
+  var w = el.scrollWidth, h = el.scrollHeight;
+  html2canvas(el, {
+    backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false,
+    width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
+  }).then(function(canvas){
     var a = document.createElement('a');
     if (fmt === 'jpeg') {
       a.href = canvas.toDataURL('image/jpeg', 0.95);
       a.download = 'clm-org-chart.jpg';
     } else {
-      /* SVG: embed rendered canvas as image inside SVG */
-      var w = canvas.width, h = canvas.height;
-      var img = canvas.toDataURL('image/png');
-      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">' +
-        '<image href="'+img+'" width="'+w+'" height="'+h+'"/></svg>';
-      a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-      a.download = 'clm-org-chart.svg';
+      var iw=canvas.width, ih=canvas.height, img=canvas.toDataURL('image/png');
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+iw+'" height="'+ih+'"><image href="'+img+'" width="'+iw+'" height="'+ih+'"/></svg>';
+      a.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+      a.download='clm-org-chart.svg';
     }
-    a.click();
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
   });
 }
 </script>
