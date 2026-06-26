@@ -218,9 +218,12 @@ function cardBg(n){
   return '';
 }
 
-function pillHtml(r){
+function pillHtml(r,n){
   var col=RCOLS[r]||'#888';
-  return '<span class="cpill" style="color:'+col+';background:color-mix(in srgb,'+col+' 13%,white);border:1px solid color-mix(in srgb,'+col+' 26%,white);">'+(RLABEL[r]||r)+'</span>';
+  var darkCard = (n.lv===0) || (n.lv===1&&n.lead);
+  var darkCard = (n.lv===0) || (n.lv===1&&n.lead);
+  if(darkCard) return '<span class="cpill" style="color:#fff;background:rgba(0,0,0,.3);">'+(RLABEL[r]||r)+'</span>';
+  return '<span class="cpill" style="color:#3d4a5c;background:#dde1e7;border:1px solid #c4cad4;">'+(RLABEL[r]||r)+'</span>';
 }
 
 function renderTree(root, canvasEl){
@@ -246,7 +249,7 @@ function renderTree(root, canvasEl){
   canvasEl.innerHTML=placements.map(function(p,i){
     var n=p.n, cardW=(n.lv===0?CW0:CW), lx=Math.round(p.cx-cardW/2),ly=Math.round(p.y);
     var rg=n.rg||[];
-    var pills=rg.map(function(r){return pillHtml(r);}).join('');
+    var pills=rg.map(function(r){return pillHtml(r,n);}).join('');
     var pillsRow=pills?'<div class="cpt">'+pills+'</div>':'';
     return '<div class="'+cardCls(n)+'" data-pidx="'+i+'" style="left:'+lx+'px;top:'+ly+'px;width:'+cardW+'px;'+cardBg(n)+'">' +
       '<div class="ci"><div class="ce">'+(n.ey||'')+'</div><div class="cn">'+n.name+'</div>'+pillsRow+'</div></div>';
