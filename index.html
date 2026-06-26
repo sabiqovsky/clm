@@ -332,7 +332,7 @@ function downloadChart(fmt) {
   var el = document.getElementById('chart-canvas');
   var w = el.scrollWidth, h = el.scrollHeight;
   html2canvas(el, {
-    backgroundColor:'#ffffff', scale:3, useCORS:true, logging:false,
+    scale:3, useCORS:true, logging:false,
     width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
   }).then(function(canvas){
     var a = document.createElement('a');
