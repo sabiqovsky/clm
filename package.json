@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "cloudconvert": "4.0.0"
+    "cloudconvert": "3.0.0",
+    "node-fetch": "2.7.0"
+  },
+  "devDependencies": {
+    "vercel": "latest"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
   }
 }
