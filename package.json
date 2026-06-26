@@ -1,0 +1,8 @@
+{
+  "name": "clm-orgs-chart",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "cloudconvert": "4.0.0"
+  }
+}

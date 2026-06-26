@@ -151,6 +151,8 @@
   <div class="dl-bar">
     <button class="dl-btn" onclick="downloadChart('png')">&#8595; Download PNG</button>
     <button class="dl-btn" onclick="downloadChart('svg')">&#8595; Download SVG</button>
+    <button class="dl-btn" onclick="downloadChart('wmf')">&#8595; Download WMF</button>
+    <button class="dl-btn" onclick="downloadChart('emf')">&#8595; Download EMF</button>
   </div>
 </div>
 
@@ -328,24 +330,55 @@ setTimeout(function(){
 <!-- html2canvas for image export -->
 <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
-function downloadChart(fmt) {
-  var el = document.getElementById('chart-canvas');
+function captureCanvas(elId, callback) {
+  var el = document.getElementById(elId);
   var w = el.scrollWidth, h = el.scrollHeight;
   html2canvas(el, {
     scale:4, useCORS:true, logging:false,
     width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
-  }).then(function(canvas){
-    var a = document.createElement('a');
+  }).then(callback);
+}
+
+function downloadChart(fmt) {
+  captureCanvas('chart-canvas', function(canvas) {
     if (fmt === 'png') {
+      var a = document.createElement('a');
       a.href = canvas.toDataURL('image/png');
       a.download = 'clm-org-chart.png';
-    } else {
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    } else if (fmt === 'svg') {
       var iw=canvas.width, ih=canvas.height, img=canvas.toDataURL('image/png');
       var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+iw+'" height="'+ih+'"><image href="'+img+'" width="'+iw+'" height="'+ih+'"/></svg>';
+      var a = document.createElement('a');
       a.href='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
       a.download='clm-org-chart.svg';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    } else {
+      convertViaServer(canvas.toDataURL('image/png'), fmt, 'clm-org-chart');
     }
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+
+function convertViaServer(dataUrl, fmt, filename) {
+  var btn = event.target;
+  btn.disabled = true; btn.textContent = 'Converting…';
+  fetch('/api/convert', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({image: dataUrl, format: fmt, filename: filename})
+  }).then(function(res) {
+    if (!res.ok) return res.json().then(function(e){ throw new Error(e.error); });
+    return res.blob();
+  }).then(function(blob) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename + '.' + fmt;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }).catch(function(err) {
+    alert('Conversion failed: ' + err.message);
+  }).finally(function() {
+    btn.disabled = false; btn.textContent = '\u2193 Download ' + fmt.toUpperCase();
   });
 }
 </script>
