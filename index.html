@@ -69,6 +69,7 @@
   .ocard.l1 .ce{color:var(--ink-soft);}
   .ocard.l1 .cn{color:var(--ink);font-size:14px;}
   .ocard.l2-lead{border:none;}
+  .ocard.l2-lead{border:none;background:#0f6b7a;}
   .ocard.l2-lead .ce{color:rgba(255,255,255,.72);}
   .ocard.l2-lead .cn{color:#fff;}
   .ocard.l2-lead .cpill{color:#fff;background:rgba(0,0,0,.25);}
@@ -81,7 +82,7 @@
   .ocard.l3 .cn{color:var(--ink);font-size:11.5px;}
 
   /* tweak: color off */
-  body[data-color="off"] .ocard.l2-lead{background:var(--accent)!important;}
+  body[data-color="off"] .ocard.l2-lead{background:#0f6b7a!important;}
   body[data-color="off"] .ocard.l2-lead .cpill{color:#fff;background:rgba(0,0,0,.25);}
   body[data-color="off"] .top-strip{background:var(--accent)!important;}
 
@@ -231,7 +232,7 @@ function cardCls(n) {
   return 'ocard l3';
 }
 function cardBgStyle(n) {
-  if (n.lv === 2 && n.lead) return 'background:' + (n.rg[0] ? RCOLS[n.rg[0]] : 'var(--accent)') + ';';
+  if (n.lv === 2 && n.lead) return 'background:' + (n.rg[0] ? RCOLS[n.rg[0]] : '#0f6b7a') + ';';
   return '';
 }
 function pillHtml(r, n) {
