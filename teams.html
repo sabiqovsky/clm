@@ -231,7 +231,7 @@ var TEAMS = [
     {name:'Syuhada Sipayung',lv:1,lead:false,ey:'CSM',rg:['DD'],ch:[]},
     {name:'Candice Lee',lv:1,lead:false,ey:'CSM',rg:['DD'],ch:[]}
   ]}},
-  {id:'chart-david', root:{name:'David Setyawan',lv:0,ey:'Customer Success Lead',ch:[
+  {id:'chart-david', root:{name:'David Setyawan',lv:0,ey:'Customer Success Lead',rg:['PL'],ch:[
     {name:'Wynona Lamiraj',lv:1,lead:false,ey:'CSM',rg:['PL'],ch:[]},
     {name:'Ridzeki Akbar',lv:1,lead:false,ey:'CSM',rg:['PL'],ch:[]},
     {name:'Faira Yenita',lv:1,lead:false,ey:'CSM',rg:['PL'],ch:[]},
@@ -254,7 +254,9 @@ function cardCls(n){
 }
 
 function cardBg(n){
-  if(n.lv===1&&n.lead) return 'background:' + (n.rg&&n.rg[0] ? 'var(--'+n.rg[0]+')' : 'var(--c-lead-bg)') + ';';
+  var rg = n.rg&&n.rg[0];
+  if(n.lv===0&&rg) return 'background:var(--'+rg+');';
+  if(n.lv===1&&n.lead) return 'background:' + (rg ? 'var(--'+rg+')' : 'var(--c-lead-bg)') + ';';
   return '';
 }
 
