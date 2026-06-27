@@ -261,12 +261,15 @@ function cardCls(n) {
   return 'ocard l3';
 }
 function cardBgStyle(n) {
-  if (n.lv === 2 && n.lead) return 'background:var(--c-lead-bg);';
+  if (n.lv === 2 && n.lead) return 'background:#0f6b7a;';
   return '';
 }
 function pillHtml(r, n) {
   var darkCard = n.lv === 0 || n.lv === 1 || (n.lv === 2 && n.lead);
-  return '<span class="cpill' + (darkCard ? ' cpill--dark' : ' cpill--light') + '">' + (RLABEL[r]||r) + '</span>';
+  var st = darkCard
+    ? 'color:#ffffff;background:rgba(0,0,0,.3);'
+    : 'color:#3d4a5c;background:#dde1e7;border:1px solid #c4cad4;';
+  return '<span class="cpill" style="' + st + '">' + (RLABEL[r]||r) + '</span>';
 }
 function renderCard(p, idx) {
   var n = p.n, cx = p.cx, y = p.y;
