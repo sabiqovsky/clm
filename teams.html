@@ -301,7 +301,7 @@ function renderTree(root, canvasEl){
     var rg=n.rg||[];
     var pills=rg.map(function(r){return pillHtml(r,n);}).join('');
     var pillsRow=pills?'<div class="cpt">'+pills+'</div>':'';
-    return '<div class="'+cardCls(n)+'" data-pidx="'+i+'" style="left:'+lx+'px;top:'+ly+'px;width:max-content;transform:translateX(-50%);'+cardBg(n)+'">' +
+    return '<div class="'+cardCls(n)+'" data-pidx="'+i+'" style="left:'+lx+'px;top:'+ly+'px;width:max-content;min-width:'+CW+'px;transform:translateX(-50%);'+cardBg(n)+'">' +
       '<div class="ci"><div class="ce">'+(n.ey||'')+'</div><div class="cn">'+n.name+'</div>'+pillsRow+'</div></div>';
   }).join('');
 

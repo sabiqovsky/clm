@@ -274,7 +274,7 @@ function renderCard(p, idx) {
   var drAttr = n.rg.length ? ' data-region="' + n.rg.join(' ') + '"' : '';
   var pills = n.rg.map(function(r){ return pillHtml(r, n); }).join('');
   var pillsRow = pills ? '<div class="cpt">' + pills + '</div>' : '';
-  return '<div class="' + cardCls(n) + '" data-pidx="' + idx + '" style="left:' + lx + 'px;top:' + ly + 'px;width:max-content;transform:translateX(-50%);' + bgStyle + '"' + drAttr + '>' +
+  return '<div class="' + cardCls(n) + '" data-pidx="' + idx + '" style="left:' + lx + 'px;top:' + ly + 'px;width:max-content;min-width:' + CW + 'px;transform:translateX(-50%);' + bgStyle + '"' + drAttr + '>' +
     strip + '<div class="ci"><div class="ce">' + (n.ey||'') + '</div><div class="cn">' + n.name + '</div>' + pillsRow + '</div></div>';
 }
 
