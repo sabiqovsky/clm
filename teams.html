@@ -58,7 +58,7 @@
   .ocard .top-strip{height:3px;width:100%;}
   .ocard .ci{padding:9px 15px 10px;text-align:center;}
   .ocard .ce{font-size:8.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;margin-bottom:4px;line-height:1.35;white-space:nowrap;}
-  .ocard .cn{font-size:12px;font-weight:800;letter-spacing:-.01em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ocard .cn{font-size:12px;font-weight:800;letter-spacing:-.01em;line-height:1.25;white-space:nowrap;}
   .ocard .cpt{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;justify-content:center;}
   .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 5px;line-height:1.2;}
 
@@ -271,17 +271,17 @@ function renderTree(root, canvasEl){
   }
   lay(root, sw(root)/2+PAD, PAD);
 
-  var maxX=Math.max.apply(null,placements.map(function(p){return p.cx+CW/2;}))+PAD;
+  var maxX=Math.max.apply(null,placements.map(function(p){return p.cx+(p.n.lv===0?CW0:CW)/2;}))+PAD;
   var estMaxY=Math.max.apply(null,placements.map(function(p){return p.y;}))+CH+PAD;
   canvasEl.style.width=maxX+'px';
   canvasEl.style.height=estMaxY+'px';
 
   canvasEl.innerHTML=placements.map(function(p,i){
-    var n=p.n, cardW=(n.lv===0?CW0:CW), lx=Math.round(p.cx-cardW/2),ly=Math.round(p.y);
+    var n=p.n, lx=Math.round(p.cx), ly=Math.round(p.y);
     var rg=n.rg||[];
     var pills=rg.map(function(r){return pillHtml(r,n);}).join('');
     var pillsRow=pills?'<div class="cpt">'+pills+'</div>':'';
-    return '<div class="'+cardCls(n)+'" data-pidx="'+i+'" style="left:'+lx+'px;top:'+ly+'px;width:'+cardW+'px;'+cardBg(n)+'">' +
+    return '<div class="'+cardCls(n)+'" data-pidx="'+i+'" style="left:'+lx+'px;top:'+ly+'px;width:max-content;transform:translateX(-50%);'+cardBg(n)+'">' +
       '<div class="ci"><div class="ce">'+(n.ey||'')+'</div><div class="cn">'+n.name+'</div>'+pillsRow+'</div></div>';
   }).join('');
 
