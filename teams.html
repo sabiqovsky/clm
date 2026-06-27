@@ -204,7 +204,7 @@ var RLABEL = {PL:'Pool',DD:'Dedicated'};
 
 /* Each tree rooted at lv:0 for rendering purposes */
 var TEAMS = [
-  {id:'chart-dinan', root:{name:'Dinan',lv:0,ey:'Head of Customer Implementations',ch:[
+  {id:'chart-dinan', root:{name:'Dinan',lv:0,head:true,ey:'Head of Customer Implementations',ch:[
     {name:'Janet',lv:1,lead:true,ey:'Customer Implementations Lead',rg:[],ch:[
       {name:'Dionne Aurelia',lv:2,ey:'CIM',rg:[],ch:[]},
       {name:'Dianne Cabrera',lv:2,ey:'CIM',rg:[],ch:[]}
@@ -217,7 +217,7 @@ var TEAMS = [
     {name:'Nina Rasmeika Pratiwi',lv:1,lead:false,ey:'CIM',rg:[],ch:[]},
     {name:'Askar Sabiq',lv:1,lead:false,ey:'Automation & Analytics',rg:[],ch:[]}
   ]}},
-  {id:'chart-clory', root:{name:'Clory Pienarso',lv:0,ey:'Head of Customer Success',rg:['DD'],ch:[
+  {id:'chart-clory', root:{name:'Clory Pienarso',lv:0,head:true,ey:'Head of Customer Success',rg:['DD'],ch:[
     {name:'Putri Erfiasany',lv:1,lead:true,ey:'Customer Success Lead',rg:['DD'],ch:[
       {name:'Fergie Iswandi',lv:2,ey:'CSM',rg:['DD'],ch:[]},
       {name:'Sarah Mutia',lv:2,ey:'CSM',rg:['DD'],ch:[]},
@@ -255,7 +255,7 @@ function cardCls(n){
 
 function cardBg(n){
   var rg = n.rg&&n.rg[0];
-  if(n.lv===0&&rg) return 'background:var(--'+rg+');';
+  if(n.lv===0&&!n.head&&rg) return 'background:var(--'+rg+');'; /* lead-as-root (David) */
   if(n.lv===1&&n.lead) return 'background:var(--c-lead-bg);';
   return '';
 }
