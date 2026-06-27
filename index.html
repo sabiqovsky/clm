@@ -213,7 +213,7 @@ var ORG = {name:'Shing Kwan Tan',lv:0,ey:'Head of Customer Lifecycle Management'
 ]};
 
 /* ---- LAYOUT CONSTANTS ---- */
-var CW = 225, CH = 100, HG = 24, VG = 100, PAD = 44;
+var CW = 225, CH = 82, HG = 14, VG = 100, PAD = 44;
 
 /* subtree width */
 function sw(n) {
@@ -274,92 +274,31 @@ function renderCard(p, idx) {
   var drAttr = n.rg.length ? ' data-region="' + n.rg.join(' ') + '"' : '';
   var pills = n.rg.map(function(r){ return pillHtml(r, n); }).join('');
   var pillsRow = pills ? '<div class="cpt">' + pills + '</div>' : '';
-  return '<div class="' + cardCls(n) + '" data-pidx="' + idx + '" style="left:' + lx + 'px;top:' + ly + 'px;width:max-content;min-width:' + CW + 'px;transform:translateX(-50%);' + bgStyle + '"' + drAttr + '>' +
+  return '<div class="' + cardCls(n) + '" data-pidx="' + idx + '" style="left:' + lx + 'px;top:' + ly + 'px;width:max-content;transform:translateX(-50%);' + bgStyle + '"' + drAttr + '>' +
     strip + '<div class="ci"><div class="ce">' + (n.ey||'') + '</div><div class="cn">' + n.name + '</div>' + pillsRow + '</div></div>';
 }
 
-/* ---- PASS 1: Render cards with estimated positions ---- */
+/* ---- PASS 1: Render cards ---- */
 var canvas = document.getElementById('chart-canvas');
 canvas.style.width  = maxX + 'px';
 canvas.style.height = estMaxY + 'px';
 canvas.innerHTML = placements.map(function(p, i){ return renderCard(p, i); }).join('');
 
-/* ---- PASS 2: Measure actual dimensions ---- */
+/* ---- PASS 2: Measure actual heights, then draw SVG lines ---- */
 var actualH = placements.map(function(_, i){
   var el = canvas.querySelector('[data-pidx="' + i + '"]');
   return el ? el.offsetHeight : CH;
 });
-var actualW = placements.map(function(_, i){
-  var el = canvas.querySelector('[data-pidx="' + i + '"]');
-  return el ? el.offsetWidth : CW;
-});
 
-/* ---- PASS 3: Recompute layout with actual widths ---- */
-placements = []; connections = [];
-
-/* max card height per level — ensures all rows align */
-var maxHByLevel = {};
-placements.forEach && void 0; /* placements already reset */
-(function collectH(n){ 
-  var h = actualH[n._pidx];
-  maxHByLevel[n.lv] = Math.max(maxHByLevel[n.lv]||0, h);
-  (n.ch||[]).forEach(collectH);
-})(ORG);
-
-function swActual(n) {
-  var w = actualW[n._pidx] || CW;
-  if (!n.ch || !n.ch.length) return w;
-  var tot = n.ch.reduce(function(s,c){ return s + swActual(c); }, 0);
-  return Math.max(w, tot + (n.ch.length - 1) * HG);
-}
-function layActual(n, cx, y) {
-  var myIdx = placements.length;
-  n._pidx2 = myIdx;
-  placements.push({n:n, cx:cx, y:y});
-  if (!n.ch || !n.ch.length) return;
-  var childY = y + (maxHByLevel[n.lv] || actualH[n._pidx]) + VG;
-  var tot = n.ch.reduce(function(s,c){ return s + swActual(c); }, 0) + (n.ch.length - 1) * HG;
-  var x0 = cx - tot / 2;
-  var ccxs = n.ch.map(function(c){
-    var cw = swActual(c), ccx = x0 + cw / 2;
-    x0 += cw + HG;
-    return ccx;
-  });
-  var childPidxs = [];
-  n.ch.forEach(function(c, i){
-    childPidxs.push(placements.length);
-    layActual(c, ccxs[i], childY);
-  });
-  connections.push({pidx:myIdx, pcx:cx, py:y, ccxs:ccxs, childY:childY, childPidxs:childPidxs});
-
-}
-
-layActual(ORG, swActual(ORG) / 2 + PAD, PAD);
-
-/* Reposition cards to actual positions */
-placements.forEach(function(p, i){
-  var el = canvas.querySelector('[data-pidx="' + (p.n._pidx) + '"]');
-  if (el) { el.style.left = Math.round(p.cx) + 'px'; el.style.top = Math.round(p.y) + 'px'; }
-});
-
-/* Sync connector coords to actual placed cx/cy */
-connections.forEach(function(conn){
-  conn.pcx = Math.round(placements[conn.pidx].cx);
-  conn.py  = placements[conn.pidx].y;
-  conn.ccxs = conn.childPidxs.map(function(idx){ return Math.round(placements[idx].cx); });
-});
-
-var newMaxX = Math.max.apply(null, placements.map(function(p, i){ return p.cx + actualW[p.n._pidx] / 2; })) + PAD;
-var trueMaxY = Math.max.apply(null, placements.map(function(p, i){ return p.y + actualH[p.n._pidx]; })) + PAD + 30;
-canvas.style.width = newMaxX + 'px';
+/* refit canvas height */
+var trueMaxY = Math.max.apply(null, placements.map(function(p, i){ return p.y + actualH[i]; })) + PAD + 30;
 canvas.style.height = trueMaxY + 'px';
 
 /* compute edges */
 var STEM = 20; /* fixed distance above child row for the bus line */
 var edges = [];
 connections.forEach(function(conn){
-  var parentNode = placements[conn.pidx].n;
-  var pBottom = conn.py + (maxHByLevel[parentNode.lv] || actualH[parentNode._pidx]);
+  var pBottom = conn.py + actualH[conn.pidx];
   var busY = Math.round(conn.childY - STEM);
   /* stem: parent card bottom → bus */
   edges.push([conn.pcx, pBottom, conn.pcx, busY]);
@@ -375,8 +314,8 @@ connections.forEach(function(conn){
 /* build SVG */
 var NS = 'http://www.w3.org/2000/svg';
 var svgEl = document.createElementNS(NS, 'svg');
-svgEl.style.cssText = 'position:absolute;inset:0;width:' + newMaxX + 'px;height:' + trueMaxY + 'px;pointer-events:none;overflow:visible;';
-svgEl.setAttribute('viewBox', '0 0 ' + newMaxX + ' ' + trueMaxY);
+svgEl.style.cssText = 'position:absolute;inset:0;width:' + maxX + 'px;height:' + trueMaxY + 'px;pointer-events:none;overflow:visible;';
+svgEl.setAttribute('viewBox', '0 0 ' + maxX + ' ' + trueMaxY);
 edges.forEach(function(e){
   var line = document.createElementNS(NS, 'line');
   line.setAttribute('x1', e[0].toFixed(1)); line.setAttribute('y1', e[1].toFixed(1));
@@ -388,8 +327,8 @@ edges.forEach(function(e){
 });
 canvas.insertBefore(svgEl, canvas.firstChild);
 
-/* center scroll on Shing's actual position */
-var headCX = placements[0].cx;
+/* center scroll */
+var headCX = sw(ORG) / 2 + PAD;
 setTimeout(function(){
   var wrap = document.querySelector('.chart-wrap');
   wrap.scrollLeft = Math.max(0, Math.round(headCX - wrap.clientWidth / 2));
