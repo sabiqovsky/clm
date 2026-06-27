@@ -325,8 +325,13 @@ function layActual(n, cx, y) {
     x0 += cw + HG;
     return ccx;
   });
-  connections.push({pidx:myIdx, pcx:cx, py:y, ccxs:ccxs, childY:childY});
-  n.ch.forEach(function(c, i){ layActual(c, ccxs[i], childY); });
+  var childPidxs = [];
+  n.ch.forEach(function(c, i){
+    childPidxs.push(placements.length);
+    layActual(c, ccxs[i], childY);
+  });
+  connections.push({pidx:myIdx, pcx:cx, py:y, ccxs:ccxs, childY:childY, childPidxs:childPidxs});
+
 }
 
 layActual(ORG, swActual(ORG) / 2 + PAD, PAD);
@@ -335,6 +340,13 @@ layActual(ORG, swActual(ORG) / 2 + PAD, PAD);
 placements.forEach(function(p, i){
   var el = canvas.querySelector('[data-pidx="' + (p.n._pidx) + '"]');
   if (el) { el.style.left = Math.round(p.cx) + 'px'; el.style.top = Math.round(p.y) + 'px'; }
+});
+
+/* Sync connector coords to actual placed cx/cy */
+connections.forEach(function(conn){
+  conn.pcx = placements[conn.pidx].cx;
+  conn.py  = placements[conn.pidx].y;
+  conn.ccxs = conn.childPidxs.map(function(idx){ return placements[idx].cx; });
 });
 
 var newMaxX = Math.max.apply(null, placements.map(function(p, i){ return p.cx + actualW[p.n._pidx] / 2; })) + PAD;

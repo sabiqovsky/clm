@@ -325,13 +325,21 @@ function renderTree(root, canvasEl){
     var tot=n.ch.reduce(function(s,c){return s+swA(c);},0)+(n.ch.length-1)*HG;
     var x0=cx-tot/2;
     var ccxs=n.ch.map(function(c){var cw=swA(c),ccx=x0+cw/2;x0+=cw+HG;return ccx;});
-    connections.push({pidx:idx,pcx:cx,py:y,ccxs:ccxs,childY:childY});
-    n.ch.forEach(function(c,i){layA(c,ccxs[i],childY);});
+    var childPidxs=[];
+    n.ch.forEach(function(c,i){childPidxs.push(placements2.length);layA(c,ccxs[i],childY);});
+    connections.push({pidx:idx,pcx:cx,py:y,ccxs:ccxs,childY:childY,childPidxs:childPidxs});
   }
   layA(root, swA(root)/2+PAD, PAD);
   placements2.forEach(function(p){
     var el=canvasEl.querySelector('[data-pidx="'+p.n._pidx+'"]');
     if(el){el.style.left=Math.round(p.cx)+'px';el.style.top=Math.round(p.y)+'px';}
+  });
+
+  /* Sync connector coords to actual placed positions */
+  connections.forEach(function(conn){
+    conn.pcx=placements2[conn.pidx].cx;
+    conn.py=placements2[conn.pidx].y;
+    conn.ccxs=conn.childPidxs.map(function(idx){return placements2[idx].cx;});
   });
 
   var newMaxX=Math.max.apply(null,placements2.map(function(p){return p.cx+actualW[p.n._pidx]/2;}))+PAD;
