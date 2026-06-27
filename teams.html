@@ -254,8 +254,6 @@ function cardCls(n){
 }
 
 function cardBg(n){
-  var rg = n.rg&&n.rg[0];
-  if(n.lv===0&&!n.head&&rg) return 'background:var(--'+rg+');'; /* lead-as-root (David) */
   if(n.lv===1&&n.lead) return 'background:var(--c-lead-bg);';
   return '';
 }
