@@ -272,7 +272,7 @@ function cardBg(n){
 
 function pillHtml(r,n){
   var darkCard = (n.lv===0) || (n.lv===1&&n.lead);
-  var st = darkCard ? 'color:#ffffff;background:rgba(0,0,0,.3);' : 'color:#3d4a5c;background:#dde1e7;border:1px solid #c4cad4;';
+  var st = darkCard ? 'color:#ffffff;background:rgba(0,0,0,.3);' : 'color:#3d4a5c;background:transparent;';
   return '<span class="cpill" style="'+st+'">'+(RLABEL[r]||r)+'</span>';
 }
 
