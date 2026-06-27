@@ -11,7 +11,7 @@
     --ink:#1c2433;--ink-soft:#56607a;--ink-faint:#8a93a8;
     --line:#d7d2c6;--line-soft:#e7e3da;--paper:#ffffff;--connect:#bfb9af;
     --accent:#334155;
-    --PL:#5b6472;
+    --PL:#5b6472;--DD:#5b6472;
     /* Card roles */
     --c-head-bg:#1e3a5f;
     --c-lead-bg:#0f6b7a;
@@ -199,8 +199,8 @@ function convertViaServer(dataUrl, fmt, filename) {
 
 <script>
 (function(){
-var RCOLS = {PL:'#5b6472'};
-var RLABEL = {PL:'Pool'};
+var RCOLS = {PL:'#5b6472',DD:'#5b6472'};
+var RLABEL = {PL:'Pool',DD:'Dedicated'};
 
 /* Each tree rooted at lv:0 for rendering purposes */
 var TEAMS = [
@@ -219,17 +219,17 @@ var TEAMS = [
   ]}},
   {id:'chart-clory', root:{name:'Clory Pienarso',lv:0,ey:'Head of Customer Success',ch:[
     {name:'Putri Erfiasany',lv:1,lead:true,ey:'Customer Success Lead',rg:[],ch:[
-      {name:'Fergie Iswandi',lv:2,ey:'CSM',rg:[],ch:[]},
-      {name:'Sarah Mutia',lv:2,ey:'CSM',rg:[],ch:[]},
-      {name:'Rahmadika Kampai',lv:2,ey:'CSM',rg:[],ch:[]}
+      {name:'Fergie Iswandi',lv:2,ey:'CSM',rg:['DD'],ch:[]},
+      {name:'Sarah Mutia',lv:2,ey:'CSM',rg:['DD'],ch:[]},
+      {name:'Rahmadika Kampai',lv:2,ey:'CSM',rg:['DD'],ch:[]}
     ]},
     {name:'May Cruz',lv:1,lead:true,ey:'Customer Success Lead',rg:[],ch:[
-      {name:'Cherry Mijares',lv:2,ey:'CSM',rg:[],ch:[]},
-      {name:'Claudia Liwanag',lv:2,ey:'CSM',rg:[],ch:[]}
+      {name:'Cherry Mijares',lv:2,ey:'CSM',rg:['DD'],ch:[]},
+      {name:'Claudia Liwanag',lv:2,ey:'CSM',rg:['DD'],ch:[]}
     ]},
-    {name:'Jenny Lu',lv:1,lead:false,ey:'CSM',rg:[],ch:[]},
-    {name:'Syuhada Sipayung',lv:1,lead:false,ey:'CSM',rg:[],ch:[]},
-    {name:'Candice Lee',lv:1,lead:false,ey:'CSM',rg:[],ch:[]}
+    {name:'Jenny Lu',lv:1,lead:false,ey:'CSM',rg:['DD'],ch:[]},
+    {name:'Syuhada Sipayung',lv:1,lead:false,ey:'CSM',rg:['DD'],ch:[]},
+    {name:'Candice Lee',lv:1,lead:false,ey:'CSM',rg:['DD'],ch:[]}
   ]}},
   {id:'chart-david', root:{name:'David Setyawan',lv:0,ey:'Customer Success Lead',ch:[
     {name:'Wynona Lamiraj',lv:1,lead:false,ey:'CSM',rg:['PL'],ch:[]},
