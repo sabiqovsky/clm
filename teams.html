@@ -65,7 +65,8 @@
   /* ---- Card base ---- */
   .ocard{
     position:absolute;border-radius:var(--card-radius);overflow:hidden;
-    background:var(--paper);border:1px solid var(--line-soft);
+    background:var(--paper);
+    border:1px solid var(--line-soft);
     box-shadow:var(--shadow-card);
     cursor:default;
     transition:box-shadow .15s,transform .15s;
@@ -78,8 +79,8 @@
   .ocard .cpt{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;width:max-content;margin-left:auto;margin-right:auto;}
   .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:20px;padding:2px 7px;line-height:1.2;}
 
-  /* Dark cards */
-  .ocard.l0,.ocard.l1-lead{border:none;box-shadow:var(--shadow-dark);}
+  /* Dark cards — same border/shadow structure, different color */
+  .ocard.l0,.ocard.l1-lead{border:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow-dark);}
   .ocard.l0 .ce,.ocard.l1-lead .ce{color:var(--c-head-title);}
   .ocard.l0 .cn,.ocard.l1-lead .cn{color:var(--paper);}
   .ocard.l0{background:var(--c-head-bg);}
@@ -87,7 +88,7 @@
   .ocard.l1-lead{background:var(--c-lead-bg);}
   .ocard.l1-lead .ce{color:var(--c-lead-title);}
   /* White cards */
-  .ocard.l1-direct,.ocard.l2{background:var(--paper);border:1px solid var(--line-soft);}
+  .ocard.l1-direct,.ocard.l2{background:var(--paper);}
   .ocard.l2 .cn{font-size:11.5px;}
   /* Pills — colors set via inline style in pillHtml() */
 
