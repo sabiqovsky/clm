@@ -296,10 +296,11 @@ var trueMaxY = Math.max.apply(null, placements.map(function(p, i){ return p.y + 
 canvas.style.height = trueMaxY + 'px';
 
 /* compute edges */
+var STEM = 20; /* fixed distance above child row for the bus line */
 var edges = [];
 connections.forEach(function(conn){
   var pBottom = conn.py + actualH[conn.pidx];
-  var busY = Math.round(pBottom + (conn.childY - pBottom) * 0.5);
+  var busY = Math.round(conn.childY - STEM);
   /* stem: parent card bottom → bus */
   edges.push([conn.pcx, pBottom, conn.pcx, busY]);
   /* horizontal bus */

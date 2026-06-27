@@ -299,10 +299,11 @@ function renderTree(root, canvasEl){
   var trueMaxY=Math.max.apply(null,placements.map(function(p,i){return p.y+actualH[i];}))+PAD+20;
   canvasEl.style.height=trueMaxY+'px';
 
+  var STEM=20;
   var edges=[];
   connections.forEach(function(conn){
     var pBottom=conn.py+actualH[conn.pidx];
-    var busY=Math.round(pBottom+(conn.childY-pBottom)*0.5);
+    var busY=Math.round(conn.childY-STEM);
     edges.push([conn.pcx,pBottom,conn.pcx,busY]);
     if(conn.ccxs.length>1) edges.push([conn.ccxs[0],busY,conn.ccxs[conn.ccxs.length-1],busY]);
     conn.ccxs.forEach(function(ccx){edges.push([ccx,busY,ccx,conn.childY]);});
