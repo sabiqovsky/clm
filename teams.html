@@ -350,7 +350,8 @@ function renderTree(root, canvasEl){
   var STEM=20;
   var edges=[];
   connections.forEach(function(conn){
-    var pBottom=conn.py+actualH[placements2[conn.pidx].n._pidx];
+    var parentNode=placements2[conn.pidx].n;
+    var pBottom=conn.py+(maxHByLevel[parentNode.lv]||actualH[parentNode._pidx]);
     var busY=Math.round(conn.childY-STEM);
     edges.push([conn.pcx,pBottom,conn.pcx,busY]);
     if(conn.ccxs.length>1) edges.push([conn.ccxs[0],busY,conn.ccxs[conn.ccxs.length-1],busY]);
