@@ -9,10 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
+    /* Brand */
     --ink:#1c2433;--ink-soft:#56607a;--ink-faint:#8a93a8;
     --line:#d7d2c6;--line-soft:#e7e3da;--paper:#ffffff;--connect:#bfb9af;
     --accent:#334155;
+    /* Region */
     --ID:#2563eb;--PH:#e11d48;--MY:#ea580c;--TH:#0f9d8a;--CN:#7c3aed;--RG:#0e7490;--PL:#5b6472;
+    /* Card roles */
+    --c-apex-bg:#0f172a;      --c-apex-border:#334155;
+    --c-head-bg:#1e3a5f;
+    --c-lead-bg:#0f6b7a;
+    --c-lead-title:#a8d8df;
+    --c-head-title:#a8c4e0;
+    --c-white-title:#56607a;
+    --c-white-name:#1c2433;
+    --c-pill-dark-bg:rgba(0,0,0,.3);
+    --c-pill-light-bg:#dde1e7;--c-pill-light-border:#c4cad4;--c-pill-light-text:#3d4a5c;
+    /* Layout */
+    --card-pad-x:15px;
+    --card-radius:9px;
   }
   *,*::before,*::after{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -40,53 +55,54 @@
   .legend{display:flex;flex-wrap:wrap;gap:7px 14px;max-width:430px;justify-content:flex-end;}
   .leg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
   .leg .swatch{width:11px;height:11px;border-radius:3px;flex:none;}
+  .nav{font-size:12px;font-weight:600;color:var(--ink-soft);}
+  .nav a{color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--ink);}
+  .nav a:hover{color:var(--ink-soft);}
 
   .chart-wrap{overflow-x:auto;overflow-y:visible;padding-bottom:8px;}
   #chart-canvas{position:relative;display:block;}
 
   /* ---- Card base ---- */
   .ocard{
-    position:absolute;border-radius:9px;overflow:hidden;
-    background:#fff;border:1px solid var(--line-soft);
+    position:absolute;border-radius:var(--card-radius);overflow:hidden;
+    background:var(--paper);border:1px solid var(--line-soft);
     box-shadow:0 1px 4px rgba(28,36,51,.07);
     cursor:default;
     transition:opacity .22s,filter .22s,box-shadow .15s,transform .15s;
   }
   .ocard:hover{box-shadow:0 4px 14px rgba(28,36,51,.16);transform:translateY(-1px);z-index:10;}
   .ocard .top-strip{height:3px;width:100%;}
-  .ocard .ci{padding:9px 15px 10px;text-align:center;}
-  /* title: allow wrap, no truncation */
+  .ocard .ci{padding:9px var(--card-pad-x) 10px;text-align:center;}
   .ocard .ce{font-size:8.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;margin-bottom:4px;line-height:1.35;white-space:nowrap;}
-  /* name: single line */
   .ocard .cn{font-size:12px;font-weight:800;letter-spacing:-.01em;line-height:1.25;white-space:nowrap;}
   .ocard .cpt{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;justify-content:center;}
   .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 5px;line-height:1.2;}
 
-  /* Head of heads (Shing) */
-  .ocard.l0{background:#0f172a;border:2px solid #334155;box-shadow:0 6px 24px rgba(15,23,42,.4);}
-  .ocard.l0 .ce{color:#94a3b8;white-space:nowrap;}
-  .ocard.l0 .cn{color:#f1f5f9;font-size:16px;}
+  /* Apex (Shing) */
+  .ocard.l0{background:var(--c-apex-bg);border:2px solid var(--c-apex-border);box-shadow:0 6px 24px rgba(15,23,42,.4);}
+  .ocard.l0 .ce{color:var(--ink-faint);}
+  .ocard.l0 .cn{color:var(--paper);font-size:16px;}
   /* Dept Head */
-  .ocard.l1{background:#1e3a5f;border:none;}
-  .ocard.l1 .ce{color:#a8c4e0;}
-  .ocard.l1 .cn{color:#fff;font-size:14px;}
+  .ocard.l1{background:var(--c-head-bg);border:none;}
+  .ocard.l1 .ce{color:var(--c-head-title);}
+  .ocard.l1 .cn{color:var(--paper);font-size:14px;}
   /* Team Lead */
-  .ocard.l2-lead{border:none;background:#0f6b7a;}
-  .ocard.l2-lead .ce{color:#a8d8df;}
-  .ocard.l2-lead .cn{color:#fff;}
-  .ocard.l2-lead .cpill{color:#fff;background:rgba(0,0,0,.3);}
-  /* IC & Reports — white cards */
-  .ocard.l2-direct{background:#fff;border:1px solid var(--line-soft);}
-  .ocard.l2-direct .ce{color:#56607a;}
-  .ocard.l2-direct .cn{color:#1c2433;}
-  .ocard.l2-direct .cpill{color:#3d4a5c;background:#dde1e7;border:1px solid #c4cad4;}
-  .ocard.l3{background:#fff;}
-  .ocard.l3 .ce{color:#56607a;}
-  .ocard.l3 .cn{color:#1c2433;font-size:11.5px;}
+  .ocard.l2-lead{background:var(--c-lead-bg);border:none;}
+  .ocard.l2-lead .ce{color:var(--c-lead-title);}
+  .ocard.l2-lead .cn{color:var(--paper);}
+  /* IC */
+  .ocard.l2-direct,.ocard.l3{background:var(--paper);border:1px solid var(--line-soft);}
+  .ocard.l2-direct .ce,.ocard.l3 .ce{color:var(--c-white-title);}
+  .ocard.l2-direct .cn,.ocard.l3 .cn{color:var(--c-white-name);}
+  .ocard.l3 .cn{font-size:11.5px;}
+  /* Pills on dark cards */
+  .ocard.l0 .cpill,.ocard.l1 .cpill,.ocard.l2-lead .cpill,.cpill--dark{color:var(--paper);background:var(--c-pill-dark-bg);}
+  /* Pills on light cards */
+  .ocard.l2-direct .cpill,.ocard.l3 .cpill,.cpill--light{color:var(--c-pill-light-text);background:var(--c-pill-light-bg);border:1px solid var(--c-pill-light-border);}
 
   /* tweak: color off */
-  body[data-color="off"] .ocard.l2-lead{background:#0f6b7a!important;}
-  body[data-color="off"] .ocard.l2-lead .cpill{color:#fff;background:rgba(0,0,0,.25);}
+  body[data-color="off"] .ocard.l2-lead{background:var(--c-lead-bg)!important;}
+  body[data-color="off"] .ocard.l2-lead .cpill{color:var(--paper);background:var(--c-pill-dark-bg);}
   body[data-color="off"] .top-strip{background:var(--accent)!important;}
 
   /* tweak: focus region */
@@ -135,7 +151,7 @@
       <p class="eyebrow">2026 Organizational Structure</p>
       <h1 class="title">Customer Lifecycle Management <span>&middot; CLM</span></h1>
     </div>
-    <div style="font-size:12px;font-weight:600;"><a href="teams.html" style="color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--ink);">Team charts &#8594;</a></div>
+    <div class="nav"><a href="teams.html">Team charts &#8594;</a></div>
 
   </header>
 
@@ -244,16 +260,12 @@ function cardCls(n) {
   return 'ocard l3';
 }
 function cardBgStyle(n) {
-  if (n.lv === 2 && n.lead) return 'background:' + (n.rg[0] ? RCOLS[n.rg[0]] : '#0f6b7a') + ';';
+  if (n.lv === 2 && n.lead) return 'background:' + (n.rg[0] ? 'var(--' + n.rg[0] + ')' : 'var(--c-lead-bg)') + ';';
   return '';
 }
 function pillHtml(r, n) {
-  var col = RCOLS[r] || '#888';
-  var darkCard = n.lv === 1 || (n.lv === 2 && n.lead);
-  var st = darkCard
-    ? 'color:#fff;background:rgba(0,0,0,.3);'
-    : 'color:#3d4a5c;background:#dde1e7;border:1px solid #c4cad4;';
-  return '<span class="cpill" style="' + st + '">' + (RLABEL[r]||r) + '</span>';
+  var darkCard = n.lv === 0 || n.lv === 1 || (n.lv === 2 && n.lead);
+  return '<span class="cpill' + (darkCard ? ' cpill--dark' : ' cpill--light') + '">' + (RLABEL[r]||r) + '</span>';
 }
 function renderCard(p, idx) {
   var n = p.n, cx = p.cx, y = p.y;
