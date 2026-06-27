@@ -296,6 +296,16 @@ var actualW = placements.map(function(_, i){
 
 /* ---- PASS 3: Recompute layout with actual widths ---- */
 placements = []; connections = [];
+
+/* max card height per level — ensures all rows align */
+var maxHByLevel = {};
+placements.forEach && void 0; /* placements already reset */
+(function collectH(n){ 
+  var h = actualH[n._pidx];
+  maxHByLevel[n.lv] = Math.max(maxHByLevel[n.lv]||0, h);
+  (n.ch||[]).forEach(collectH);
+})(ORG);
+
 function swActual(n) {
   var w = actualW[n._pidx] || CW;
   if (!n.ch || !n.ch.length) return w;
@@ -307,7 +317,7 @@ function layActual(n, cx, y) {
   n._pidx2 = myIdx;
   placements.push({n:n, cx:cx, y:y});
   if (!n.ch || !n.ch.length) return;
-  var childY = y + actualH[n._pidx] + VG;
+  var childY = y + (maxHByLevel[n.lv] || actualH[n._pidx]) + VG;
   var tot = n.ch.reduce(function(s,c){ return s + swActual(c); }, 0) + (n.ch.length - 1) * HG;
   var x0 = cx - tot / 2;
   var ccxs = n.ch.map(function(c){

@@ -316,10 +316,12 @@ function renderTree(root, canvasEl){
 
   /* Recompute layout with actual widths */
   var placements2=[], connections=[];
+  var maxHByLevel={};
+  (function ch(n){var h=actualH[n._pidx];maxHByLevel[n.lv]=Math.max(maxHByLevel[n.lv]||0,h);(n.ch||[]).forEach(ch);})(root);
   function swA(n){ var w=actualW[n._pidx]||CW; if(!n.ch||!n.ch.length) return w; var tot=n.ch.reduce(function(s,c){return s+swA(c);},0); return Math.max(w,tot+(n.ch.length-1)*HG); }
   function layA(n,cx,y){ var idx=placements2.length; placements2.push({n:n,cx:cx,y:y});
     if(!n.ch||!n.ch.length) return;
-    var childY=y+actualH[n._pidx]+VG;
+    var childY=y+(maxHByLevel[n.lv]||actualH[n._pidx])+VG;
     var tot=n.ch.reduce(function(s,c){return s+swA(c);},0)+(n.ch.length-1)*HG;
     var x0=cx-tot/2;
     var ccxs=n.ch.map(function(c){var cw=swA(c),ccx=x0+cw/2;x0+=cw+HG;return ccx;});
