@@ -151,7 +151,7 @@
 var _fontReady = null;
 function ensureFont() {
   if (_fontReady) return _fontReady;
-  _fontReady = fetch('https://fonts.gstatic.com/s/plusjakartasans/v8/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KU7NSg.woff2')
+  _fontReady = fetch('https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2')
     .then(function(r){ return r.arrayBuffer(); })
     .then(function(buf){
       var b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
