@@ -309,13 +309,38 @@ function renderTree(root, canvasEl){
     var el=canvasEl.querySelector('[data-pidx="'+i+'"]');
     return el?el.offsetHeight:CH;
   });
-  var trueMaxY=Math.max.apply(null,placements.map(function(p,i){return p.y+actualH[i];}))+PAD+20;
+  var actualW=placements.map(function(_,i){
+    var el=canvasEl.querySelector('[data-pidx="'+i+'"]');
+    return el?el.offsetWidth:CW;
+  });
+
+  /* Recompute layout with actual widths */
+  var placements2=[], connections=[];
+  function swA(n){ var w=actualW[n._pidx]||CW; if(!n.ch||!n.ch.length) return w; var tot=n.ch.reduce(function(s,c){return s+swA(c);},0); return Math.max(w,tot+(n.ch.length-1)*HG); }
+  function layA(n,cx,y){ var idx=placements2.length; placements2.push({n:n,cx:cx,y:y});
+    if(!n.ch||!n.ch.length) return;
+    var childY=y+actualH[n._pidx]+VG;
+    var tot=n.ch.reduce(function(s,c){return s+swA(c);},0)+(n.ch.length-1)*HG;
+    var x0=cx-tot/2;
+    var ccxs=n.ch.map(function(c){var cw=swA(c),ccx=x0+cw/2;x0+=cw+HG;return ccx;});
+    connections.push({pidx:idx,pcx:cx,py:y,ccxs:ccxs,childY:childY});
+    n.ch.forEach(function(c,i){layA(c,ccxs[i],childY);});
+  }
+  layA(root, swA(root)/2+PAD, PAD);
+  placements2.forEach(function(p){
+    var el=canvasEl.querySelector('[data-pidx="'+p.n._pidx+'"]');
+    if(el){el.style.left=Math.round(p.cx)+'px';el.style.top=Math.round(p.y)+'px';}
+  });
+
+  var newMaxX=Math.max.apply(null,placements2.map(function(p){return p.cx+actualW[p.n._pidx]/2;}))+PAD;
+  var trueMaxY=Math.max.apply(null,placements2.map(function(p){return p.y+actualH[p.n._pidx];}))+PAD+20;
+  canvasEl.style.width=newMaxX+'px';
   canvasEl.style.height=trueMaxY+'px';
 
   var STEM=20;
   var edges=[];
   connections.forEach(function(conn){
-    var pBottom=conn.py+actualH[conn.pidx];
+    var pBottom=conn.py+actualH[placements2[conn.pidx].n._pidx];
     var busY=Math.round(conn.childY-STEM);
     edges.push([conn.pcx,pBottom,conn.pcx,busY]);
     if(conn.ccxs.length>1) edges.push([conn.ccxs[0],busY,conn.ccxs[conn.ccxs.length-1],busY]);
@@ -324,8 +349,8 @@ function renderTree(root, canvasEl){
 
   var NS='http://www.w3.org/2000/svg';
   var svg=document.createElementNS(NS,'svg');
-  svg.style.cssText='position:absolute;inset:0;width:'+maxX+'px;height:'+trueMaxY+'px;pointer-events:none;overflow:visible;';
-  svg.setAttribute('viewBox','0 0 '+maxX+' '+trueMaxY);
+  svg.style.cssText='position:absolute;inset:0;width:'+newMaxX+'px;height:'+trueMaxY+'px;pointer-events:none;overflow:visible;';
+  svg.setAttribute('viewBox','0 0 '+newMaxX+' '+trueMaxY);
   edges.forEach(function(e){
     var l=document.createElementNS(NS,'line');
     l.setAttribute('x1',e[0].toFixed(1));l.setAttribute('y1',e[1].toFixed(1));
