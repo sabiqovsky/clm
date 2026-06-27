@@ -270,7 +270,7 @@ function renderCard(p, idx) {
   var n = p.n, cx = p.cx, y = p.y;
   var lx = Math.round(cx), ly = Math.round(y);
   var bgStyle = cardBgStyle(n);
-  var strip = (n.lv === 3 && n.rg[0]) ? '<div class="top-strip" style="background:' + RCOLS[n.rg[0]] + '"></div>' : '';
+  var strip = '';
   var drAttr = n.rg.length ? ' data-region="' + n.rg.join(' ') + '"' : '';
   var pills = n.rg.map(function(r){ return pillHtml(r, n); }).join('');
   var pillsRow = pills ? '<div class="cpt">' + pills + '</div>' : '';
