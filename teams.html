@@ -347,7 +347,7 @@ function renderTree(root, canvasEl){
   canvasEl.style.width=newMaxX+'px';
   canvasEl.style.height=trueMaxY+'px';
 
-  var STEM=0;
+  var STEM=20;
   var edges=[];
   connections.forEach(function(conn){
     var parentNode=placements2[conn.pidx].n;
