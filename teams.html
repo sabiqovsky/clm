@@ -256,7 +256,7 @@ function cardCls(n){
 function cardBg(n){
   var rg = n.rg&&n.rg[0];
   if(n.lv===0&&rg) return 'background:var(--'+rg+');';
-  if(n.lv===1&&n.lead) return 'background:' + (rg ? 'var(--'+rg+')' : 'var(--c-lead-bg)') + ';';
+  if(n.lv===1&&n.lead) return 'background:var(--c-lead-bg);';
   return '';
 }
 

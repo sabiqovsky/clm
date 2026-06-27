@@ -260,7 +260,8 @@ function cardCls(n) {
   return 'ocard l3';
 }
 function cardBgStyle(n) {
-  if (n.lv === 2 && n.lead) return 'background:' + (n.rg[0] ? 'var(--' + n.rg[0] + ')' : 'var(--c-lead-bg)') + ';';
+  if (n.lv === 2 && n.lead) return 'background:var(--c-lead-bg);';
+  if (n.lv === 1 && n.rg && n.rg[0]) return 'background:var(--' + n.rg[0] + ');'; /* dept head with region (David) */
   return '';
 }
 function pillHtml(r, n) {
