@@ -388,8 +388,8 @@ edges.forEach(function(e){
 });
 canvas.insertBefore(svgEl, canvas.firstChild);
 
-/* center scroll */
-var headCX = sw(ORG) / 2 + PAD;
+/* center scroll on Shing's actual position */
+var headCX = placements[0].cx;
 setTimeout(function(){
   var wrap = document.querySelector('.chart-wrap');
   wrap.scrollLeft = Math.max(0, Math.round(headCX - wrap.clientWidth / 2));
