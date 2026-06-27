@@ -320,9 +320,11 @@ function renderTree(root, canvasEl){
   function layA(n,cx,y){ var idx=placements2.length; placements2.push({n:n,cx:cx,y:y});
     if(!n.ch||!n.ch.length) return;
     var childY=y+actualH[n._pidx]+VG;
-    var tot=n.ch.reduce(function(s,c){return s+swA(c);},0)+(n.ch.length-1)*HG;
+    var childWidths=n.ch.map(function(c){return swA(c);});
+    var maxCW=Math.max.apply(null,childWidths);
+    var tot=n.ch.length*maxCW+(n.ch.length-1)*HG;
     var x0=cx-tot/2;
-    var ccxs=n.ch.map(function(c){var cw=swA(c),ccx=x0+cw/2;x0+=cw+HG;return ccx;});
+    var ccxs=n.ch.map(function(){var ccx=x0+maxCW/2;x0+=maxCW+HG;return ccx;});
     connections.push({pidx:idx,pcx:cx,py:y,ccxs:ccxs,childY:childY});
     n.ch.forEach(function(c,i){layA(c,ccxs[i],childY);});
   }
