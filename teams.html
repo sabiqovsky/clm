@@ -148,12 +148,28 @@
 
 <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
+var _fontReady = null;
+function ensureFont() {
+  if (_fontReady) return _fontReady;
+  _fontReady = fetch('https://fonts.gstatic.com/s/plusjakartasans/v8/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KU7NSg.woff2')
+    .then(function(r){ return r.arrayBuffer(); })
+    .then(function(buf){
+      var b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+      var style = document.createElement('style');
+      style.textContent = '@font-face{font-family:"Plus Jakarta Sans";font-weight:100 900;src:url(data:font/woff2;base64,' + b64 + ') format("woff2");}';
+      document.head.appendChild(style);
+    }).catch(function(){});
+  return _fontReady;
+}
+
 function dlChart(id, name, fmt) {
-  var el = document.getElementById(id);
-  var w = el.scrollWidth, h = el.scrollHeight;
-  html2canvas(el, {
-    scale:4, useCORS:true, logging:false,
-    width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
+  ensureFont().then(function(){ return document.fonts.ready; }).then(function(){
+    var el = document.getElementById(id);
+    var w = el.scrollWidth, h = el.scrollHeight;
+    return html2canvas(el, {
+      scale:4, useCORS:true, allowTaint:false, logging:false,
+      width:w, height:h, windowWidth:w, windowHeight:h, scrollX:0, scrollY:0
+    });
   }).then(function(canvas){
     if (fmt === 'png') {
       var a = document.createElement('a');
