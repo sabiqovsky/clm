@@ -21,6 +21,10 @@
     --c-white-name:#1c2433;
     --c-pill-dark-bg:rgba(0,0,0,.3);
     --c-pill-light-bg:#dde1e7;--c-pill-light-border:#c4cad4;--c-pill-light-text:#3d4a5c;
+    /* Shadows */
+    --shadow-card:0 1px 4px rgba(28,36,51,.08);
+    --shadow-dark:0 2px 8px rgba(0,0,0,.22);
+    --shadow-hover:0 4px 14px rgba(28,36,51,.18);
     /* Layout */
     --card-pad-x:15px;
     --card-radius:9px;
@@ -62,27 +66,27 @@
   .ocard{
     position:absolute;border-radius:var(--card-radius);overflow:hidden;
     background:var(--paper);border:1px solid var(--line-soft);
-    box-shadow:0 1px 4px rgba(28,36,51,.07);
+    box-shadow:var(--shadow-card);
     cursor:default;
     transition:box-shadow .15s,transform .15s;
   }
-  .ocard:hover{box-shadow:0 4px 14px rgba(28,36,51,.16);transform:translateY(-1px);z-index:10;}
+  .ocard:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px);z-index:10;}
   .ocard .top-strip{height:3px;width:100%;}
   .ocard .ci{padding:9px var(--card-pad-x) 10px;text-align:center;}
   .ocard .ce{font-size:8.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;margin-bottom:4px;line-height:1.35;white-space:nowrap;color:var(--c-white-title);}
   .ocard .cn{font-size:12px;font-weight:800;letter-spacing:-.01em;line-height:1.25;white-space:nowrap;color:var(--c-white-name);}
   .ocard .cpt{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;width:max-content;margin-left:auto;margin-right:auto;}
-  .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 5px;line-height:1.2;}
+  .ocard .cpill{display:inline-flex;align-items:center;font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:20px;padding:2px 7px;line-height:1.2;}
 
   /* Dark cards */
-  .ocard.l0,.ocard.l1-lead{border:none;}
+  .ocard.l0,.ocard.l1-lead{border:none;box-shadow:var(--shadow-dark);}
   .ocard.l0 .ce,.ocard.l1-lead .ce{color:var(--c-head-title);}
   .ocard.l0 .cn,.ocard.l1-lead .cn{color:var(--paper);}
-  .ocard.l0{background:var(--c-head-bg);box-shadow:0 4px 14px rgba(28,36,51,.22);}
+  .ocard.l0{background:var(--c-head-bg);}
   .ocard.l0 .cn{font-size:14px;}
   .ocard.l1-lead{background:var(--c-lead-bg);}
   .ocard.l1-lead .ce{color:var(--c-lead-title);}
-  /* All white cards identical */
+  /* White cards */
   .ocard.l1-direct,.ocard.l2{background:var(--paper);border:1px solid var(--line-soft);}
   .ocard.l2 .cn{font-size:11.5px;}
   /* Pills — colors set via inline style in pillHtml() */
