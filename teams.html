@@ -337,9 +337,9 @@ function renderTree(root, canvasEl){
 
   /* Sync connector coords to actual placed positions */
   connections.forEach(function(conn){
-    conn.pcx=placements2[conn.pidx].cx;
+    conn.pcx=Math.round(placements2[conn.pidx].cx);
     conn.py=placements2[conn.pidx].y;
-    conn.ccxs=conn.childPidxs.map(function(idx){return placements2[idx].cx;});
+    conn.ccxs=conn.childPidxs.map(function(idx){return Math.round(placements2[idx].cx);});
   });
 
   var newMaxX=Math.max.apply(null,placements2.map(function(p){return p.cx+actualW[p.n._pidx]/2;}))+PAD;

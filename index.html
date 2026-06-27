@@ -344,9 +344,9 @@ placements.forEach(function(p, i){
 
 /* Sync connector coords to actual placed cx/cy */
 connections.forEach(function(conn){
-  conn.pcx = placements[conn.pidx].cx;
+  conn.pcx = Math.round(placements[conn.pidx].cx);
   conn.py  = placements[conn.pidx].y;
-  conn.ccxs = conn.childPidxs.map(function(idx){ return placements[idx].cx; });
+  conn.ccxs = conn.childPidxs.map(function(idx){ return Math.round(placements[idx].cx); });
 });
 
 var newMaxX = Math.max.apply(null, placements.map(function(p, i){ return p.cx + actualW[p.n._pidx] / 2; })) + PAD;
